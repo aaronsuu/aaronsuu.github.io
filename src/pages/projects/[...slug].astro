@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects', ({ data }) => !data.draft);
+  return projects.map((p) => ({
+    params: { slug: p.id },
+    props: { project: p },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const { data } = project;
+---
+
+<BaseLayout title={`${data.title} — Aaron Su`} description={data.description}>
+  <article class="pd-w">
+    <a class="pd-back" href="/projects">← Back to projects</a>
+
+    <div class="pd-hero">
+      {data.heroImage || data.thumbnail
+        ? <img src={data.heroImage ?? data.thumbnail} alt={data.title} />
+        : <span class="phi">⬡</span>}
+    </div>
+
+    <h1>{data.title}</h1>
+
+    <div class="pd-tags">
+      {data.keywords.map((k) => <span class="tg">{k}</span>)}
+    </div>
+
+    <div class="pd-body">
+      <Content />
+    </div>
+
+    {data.images && data.images.length > 0 && (
+      <div class="pd-gal">
+        <div class="pd-gl">Additional Images</div>
+        <div class="pd-gg">
+          {data.images.map((src) => (
+            <div class="pd-gi"><img src={src} alt="" loading="lazy" /></div>
+          ))}
+        </div>
+      </div>
+    )}
+  </article>
+</BaseLayout>
