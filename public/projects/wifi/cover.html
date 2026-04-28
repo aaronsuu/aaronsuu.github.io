@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WiFi Receiver — EE 419</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    background: #050810;
+    overflow: hidden;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .stage {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cover {
+    position: relative;
+    width: 900px;
+    height: 506px;
+    background: #060b14;
+    overflow: hidden;
+    border: 1px solid #0e2a3a;
+    transform-origin: center center;
+  }
+
+  .grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,188,212,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,188,212,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.15) 2px,
+      rgba(0,0,0,0.15) 4px
+    );
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .radial-glow {
+    position: absolute;
+    left: 200px;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,212,180,0.08) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .corner-tl, .corner-tr, .corner-bl, .corner-br {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-color: #00d4b4;
+    border-style: solid;
+    opacity: 0.6;
+  }
+  .corner-tl { top: 20px; left: 20px; border-width: 2px 0 0 2px; }
+  .corner-tr { top: 20px; right: 20px; border-width: 2px 2px 0 0; }
+  .corner-bl { bottom: 20px; left: 20px; border-width: 0 0 2px 2px; }
+  .corner-br { bottom: 20px; right: 20px; border-width: 0 2px 2px 0; }
+
+  .signal-container {
+    position: absolute;
+    left: 168px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 220px;
+    height: 220px;
+  }
+
+  .signal-container svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  @keyframes pulse-arc {
+    0%   { opacity: 0; stroke-dashoffset: 200; }
+    20%  { opacity: 1; }
+    60%  { opacity: 0.7; stroke-dashoffset: 0; }
+    100% { opacity: 0; stroke-dashoffset: 0; }
+  }
+
+  .arc1 { animation: pulse-arc 2.4s ease-in-out infinite 0.0s; }
+  .arc2 { animation: pulse-arc 2.4s ease-in-out infinite 0.3s; }
+  .arc3 { animation: pulse-arc 2.4s ease-in-out infinite 0.6s; }
+  .arc4 { animation: pulse-arc 2.4s ease-in-out infinite 0.9s; }
+
+  @keyframes scan {
+    0%   { transform: translateY(0px);   opacity: 0.7; }
+    50%  { opacity: 1; }
+    100% { transform: translateY(506px); opacity: 0; }
+  }
+  .scan-line {
+    position: absolute;
+    left: 0; top: -1px;
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,212,180,0.4), transparent);
+    animation: scan 5s linear infinite;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  @keyframes data-stream {
+    0%   { opacity: 0; transform: translateX(0); }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { opacity: 0; transform: translateX(-12px); }
+  }
+
+  .data-col {
+    position: absolute;
+    right: 38px;
+    top: 30px;
+    bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: flex-start;
+  }
+
+  .data-bit {
+    font-size: 10px;
+    color: rgba(0,212,180,0.25);
+    font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 1px;
+    animation: data-stream 3s ease-in-out infinite;
+  }
+  .data-bit:nth-child(odd)  { animation-delay: 0.5s; color: rgba(0,212,180,0.18); }
+  .data-bit:nth-child(3n)   { animation-delay: 1.2s; color: rgba(0,212,180,0.12); }
+  .data-bit:nth-child(4n)   { animation-delay: 2.1s; }
+
+  .text-area {
+    position: absolute;
+    left: 360px;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 60px;
+  }
+
+  .label-top {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 6px;
+    color: #00d4b4;
+    opacity: 0.7;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  .title-wifi {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 58px;
+    font-weight: 900;
+    color: #e8f4f8;
+    letter-spacing: -1px;
+    line-height: 1;
+    text-shadow: 0 0 40px rgba(0,212,180,0.25);
+  }
+
+  .title-receiver {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 36px;
+    font-weight: 400;
+    color: #00d4b4;
+    letter-spacing: 8px;
+    margin-top: 6px;
+    line-height: 1;
+    text-shadow: 0 0 30px rgba(0,212,180,0.4);
+  }
+
+  .divider {
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(90deg, #00d4b4, transparent);
+    margin: 22px 0;
+    opacity: 0.6;
+  }
+
+  .subtitle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: rgba(200,230,240,0.35);
+    letter-spacing: 2px;
+    line-height: 1.8;
+  }
+
+  .freq-badge {
+    position: absolute;
+    top: 28px;
+    right: 60px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: #00d4b4;
+    opacity: 0.5;
+    letter-spacing: 2px;
+  }
+
+  .course-label {
+    position: absolute;
+    bottom: 26px;
+    right: 34px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(0,212,180,0.55);
+    letter-spacing: 3px;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+  .status-dot {
+    position: absolute;
+    bottom: 30px;
+    left: 40px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .status-dot::before {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #00d4b4;
+    animation: blink 1.6s ease-in-out infinite;
+  }
+  .status-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: rgba(0,212,180,0.4);
+    text-transform: uppercase;
+  }
+
+  .vert-line {
+    position: absolute;
+    left: 350px;
+    top: 15%;
+    bottom: 15%;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, rgba(0,212,180,0.2) 30%, rgba(0,212,180,0.2) 70%, transparent);
+  }
+
+  .traces {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .noise {
+    position: absolute;
+    inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    pointer-events: none;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+<div class="cover" id="cover">
+  <div class="grid"></div>
+  <div class="noise"></div>
+  <div class="scanlines"></div>
+  <div class="scan-line"></div>
+  <div class="radial-glow"></div>
+
+  <div class="corner-tl"></div>
+  <div class="corner-tr"></div>
+  <div class="corner-bl"></div>
+  <div class="corner-br"></div>
+
+  <div class="freq-badge">2.4 GHz / 5 GHz</div>
+
+  <svg class="traces" viewBox="0 0 900 506" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 0 253 H 80 L 100 233 H 148" stroke="rgba(0,212,180,0.12)" stroke-width="1" fill="none"/>
+    <path d="M 900 200 H 820 L 800 220 H 760" stroke="rgba(0,212,180,0.08)" stroke-width="1" fill="none"/>
+    <path d="M 120 506 V 440 H 160 V 406" stroke="rgba(0,212,180,0.07)" stroke-width="1" fill="none"/>
+    <path d="M 300 0 V 60 H 340 V 80" stroke="rgba(0,212,180,0.07)" stroke-width="1" fill="none"/>
+    <circle cx="160" cy="406" r="2.5" fill="rgba(0,212,180,0.2)"/>
+    <circle cx="100" cy="233" r="2.5" fill="rgba(0,212,180,0.15)"/>
+    <circle cx="340" cy="80" r="2.5" fill="rgba(0,212,180,0.15)"/>
+    <path d="M 760 220 V 300 H 800 V 340" stroke="rgba(0,212,180,0.07)" stroke-width="1" fill="none"/>
+    <circle cx="800" cy="340" r="2.5" fill="rgba(0,212,180,0.12)"/>
+  </svg>
+
+  <div class="signal-container">
+    <svg viewBox="-10 -10 240 240" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <circle cx="110" cy="190" r="6" fill="#00d4b4" filter="url(#glow)" opacity="0.9">
+        <animate attributeName="r" values="5;8;5" dur="1.6s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="1;0.6;1" dur="1.6s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="110" cy="190" r="2" fill="#e8f4f8"/>
+
+      <path class="arc1"
+        d="M 58,190 A 52,52 0 0,1 162,190"
+        fill="none" stroke="#00d4b4" stroke-width="3"
+        stroke-linecap="round"
+        stroke-dasharray="130" stroke-dashoffset="130"
+        filter="url(#glow)" opacity="0"/>
+
+      <path class="arc2"
+        d="M 28,190 A 82,82 0 0,1 192,190"
+        fill="none" stroke="#00d4b4" stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-dasharray="200" stroke-dashoffset="200"
+        filter="url(#glow)" opacity="0"/>
+
+      <path class="arc3"
+        d="M -4,190 A 114,114 0 0,1 224,190"
+        fill="none" stroke="#00b89c" stroke-width="2"
+        stroke-linecap="round"
+        stroke-dasharray="280" stroke-dashoffset="280"
+        opacity="0"/>
+
+      <path class="arc4"
+        d="M -36,190 A 146,146 0 0,1 256,190"
+        fill="none" stroke="#008f78" stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-dasharray="360" stroke-dashoffset="360"
+        opacity="0"/>
+
+      <line x1="110" y1="30" x2="110" y2="185" stroke="rgba(0,212,180,0.3)" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <polygon points="110,18 106,30 114,30" fill="rgba(0,212,180,0.5)"/>
+
+      <line x1="40" y1="190" x2="180" y2="190" stroke="rgba(0,212,180,0.15)" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <div class="vert-line"></div>
+
+  <div class="data-col">
+    <span class="data-bit">10110</span>
+    <span class="data-bit">01001</span>
+    <span class="data-bit">11010</span>
+    <span class="data-bit">00111</span>
+    <span class="data-bit">10001</span>
+    <span class="data-bit">01110</span>
+    <span class="data-bit">11000</span>
+    <span class="data-bit">00101</span>
+    <span class="data-bit">10110</span>
+    <span class="data-bit">01011</span>
+    <span class="data-bit">11100</span>
+    <span class="data-bit">00010</span>
+    <span class="data-bit">10111</span>
+    <span class="data-bit">01000</span>
+  </div>
+
+  <div class="text-area">
+    <div class="label-top">Project &mdash; RF Systems</div>
+    <div class="title-wifi">WiFi</div>
+    <div class="title-receiver">Receiver</div>
+    <div class="divider"></div>
+    <div class="subtitle">
+      802.11 Protocol Implementation<br>
+      Signal Acquisition &amp; Demodulation<br>
+      FPGA-Based Processing Pipeline
+    </div>
+  </div>
+
+  <div class="status-dot">
+    <span class="status-text">Signal Active</span>
+  </div>
+
+  <div class="course-label">E E 419</div>
+</div>
+</div>
+<script>
+  (function () {
+    var cover = document.getElementById('cover');
+    function fit() {
+      var sx = window.innerWidth / 900;
+      var sy = window.innerHeight / 506;
+      var s = Math.min(sx, sy);
+      cover.style.transform = 'scale(' + s + ')';
+    }
+    fit();
+    window.addEventListener('resize', fit);
+  })();
+</script>
+</body>
+</html>

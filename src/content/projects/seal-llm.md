@@ -1,7 +1,9 @@
 ---
 title: SEAL Lab — Custom LLMs
-description: Training and deploying 3 custom language models for research lab workflows.
-keywords: [Python, Machine Learning, LLMs, DevOps, Cloud]
+description: Training, fine-tuning, and deploying 3 custom LLMs on cloud infrastructure for ~120 researchers.
+flag: claude-assisted
+keywords: [Python, Machine Learning, LLMs, DevOps, Cloud, Fine-Tuning, MLOps, Model Deployment]
+minorTags: [PyTorch, Hugging Face, Docker, CUDA, Inference, Distributed Training, GPU, Research, Lab Infrastructure, Version Control]
 order: 3
 ---
 

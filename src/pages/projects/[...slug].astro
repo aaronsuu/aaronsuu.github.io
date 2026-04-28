@@ -13,6 +13,12 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { Content } = await render(project);
 const { data } = project;
+
+const FLAG_LABEL = {
+  'claude-assisted': 'Claude-Assisted',
+  'claude-researched': 'Claude-Researched',
+  'independent': 'Independent',
+} as const;
 ---
 
 <BaseLayout title={`${data.title} — Aaron Su`} description={data.description}>
@@ -20,12 +26,19 @@ const { data } = project;
     <a class="pd-back" href="/projects">← Back to projects</a>
 
     <div class="pd-hero">
-      {data.heroImage || data.thumbnail
-        ? <img src={data.heroImage ?? data.thumbnail} alt={data.title} />
-        : <span class="phi">⬡</span>}
+      {data.coverHtml
+        ? <iframe class="pd-iframe" src={data.coverHtml} title={data.title} loading="lazy"></iframe>
+        : (data.heroImage || data.thumbnail)
+          ? <img src={data.heroImage ?? data.thumbnail} alt={data.title} />
+          : <span class="phi">⬡</span>}
     </div>
 
-    <h1>{data.title}</h1>
+    <div class="pd-titlerow">
+      <h1>{data.title}</h1>
+      <span class={`flag flag-${data.flag}`} title={FLAG_LABEL[data.flag]}>
+        <span class="fdot"></span>{FLAG_LABEL[data.flag]}
+      </span>
+    </div>
 
     <div class="pd-tags">
       {data.keywords.map((k) => <span class="tg">{k}</span>)}
