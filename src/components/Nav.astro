@@ -9,13 +9,11 @@ const isThanks = pathname.startsWith('/thanks');
 <nav class="nav">
   <a class="nav-brand" href="/">aaron su<b>.</b></a>
   <div class="nav-r">
-    {isProjects && (
-      <div class="srch vis" id="srch">
-        <svg class="srch-ic" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="7" cy="7" r="5.5"/><line x1="11" y1="11" x2="15" y2="15"/></svg>
-        <input class="srch-in" id="si" type="text" placeholder="Search — Python, KiCAD …" />
-        <button class="srch-x" id="sx" aria-label="Clear search">&#10005;</button>
-      </div>
-    )}
+    <form class="srch vis" id="srch" action="/projects" method="get" role="search">
+      <svg class="srch-ic" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="7" cy="7" r="5.5"/><line x1="11" y1="11" x2="15" y2="15"/></svg>
+      <input class="srch-in" id="si" name="q" type="text" placeholder="Search projects — Python, KiCAD …" autocomplete="off" />
+      <button class="srch-x" id="sx" type="button" aria-label="Clear search">&#10005;</button>
+    </form>
     <span class="rc" id="rc"></span>
     <a class={`nl${isHome ? ' active' : ''}`} href="/">Home</a>
     <a class={`nl${isProjects ? ' active' : ''}`} href="/projects">Projects</a>
@@ -40,5 +38,16 @@ const isThanks = pathname.startsWith('/thanks');
         try { localStorage.setItem('theme', n); } catch (e) {}
       });
     }
+
+    var onProjects = window.location.pathname.indexOf('/projects') === 0;
+    if (onProjects) return;
+
+    var si = document.getElementById('si');
+    var sx = document.getElementById('sx');
+    if (!si) return;
+    function toggleX() { if (sx) sx.classList.toggle('vis', si.value.length > 0); }
+    si.addEventListener('input', toggleX);
+    if (sx) sx.addEventListener('click', function () { si.value = ''; toggleX(); si.focus(); });
+    toggleX();
   })();
 </script>

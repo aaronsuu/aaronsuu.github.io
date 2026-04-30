@@ -71,6 +71,7 @@ const FLAG_LABEL = {
     var sx = document.getElementById('sx');
     var rc = document.getElementById('rc');
     var emp = document.getElementById('emp');
+    var srch = document.getElementById('srch');
     var cards = Array.prototype.slice.call(document.querySelectorAll('.card'));
     if (!si) return;
 
@@ -94,8 +95,16 @@ const FLAG_LABEL = {
       if (sx) sx.classList.toggle('vis', si.value.length > 0);
     }
 
+    var initial = '';
+    try {
+      var params = new URLSearchParams(window.location.search);
+      initial = params.get('q') || '';
+    } catch (e) {}
+    if (initial) si.value = initial;
+
     si.addEventListener('input', function () { apply(si.value); });
     if (sx) sx.addEventListener('click', function () { si.value = ''; apply(''); si.focus(); });
-    apply('');
+    if (srch) srch.addEventListener('submit', function (e) { e.preventDefault(); apply(si.value); si.blur(); });
+    apply(si.value);
   })();
 </script>

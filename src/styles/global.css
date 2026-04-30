@@ -77,7 +77,7 @@ a:hover { opacity: 0.8; }
 [data-theme="light"] .moon { display: none; }
 
 /* Search */
-.srch { position: relative; display: none; }
+.srch { position: relative; display: none; margin: 0; padding: 0; }
 .srch.vis { display: block; }
 .srch-ic { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-faint); pointer-events: none; transition: color var(--tr); }
 .srch:focus-within .srch-ic { color: var(--orange); }
