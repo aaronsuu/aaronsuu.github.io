@@ -1,10 +1,10 @@
 ---
 title: FIRST Robotics — CNC
 description: Designed and fabricated robot parts for multinational FRC competition. 3rd place regional.
-flag: independent
 keywords: [Fusion 360, CNC, CAD, Robotics, Leadership, Mechanical Design, Fabrication, Manufacturing]
 minorTags: [G-Code, Aluminum, Machining, Tolerances, Drivetrain, Mentorship, Competition, Tooling, FRC, Drafting]
 order: 4
+lastUpdated: 2026-05-27
 ---
 
 CNC Specialist for the FIRST Robotics Competition team at J.N. Burnett Secondary.

@@ -14,39 +14,85 @@ const { project } = Astro.props;
 const { Content } = await render(project);
 const { data } = project;
 
-const FLAG_LABEL = {
-  'claude-assisted': 'Claude-Assisted',
-  'claude-researched': 'Claude-Researched',
-  'independent': 'Independent',
-} as const;
+const formatDate = (d?: Date) => {
+  if (!d) return null;
+  const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const dd = String(d.getUTCDate()).padStart(2, '0');
+  return `${mm}/${dd}/${d.getUTCFullYear()}`;
+};
+
+const isExternal = (href: string) => /^https?:\/\//.test(href);
+const resolveHref = (href: string) => (isExternal(href) ? href : `/view/${href.replace(/^\/+/, '')}`);
 ---
 
 <BaseLayout title={`${data.title} — Aaron Su`} description={data.description}>
   <article class="pd-w">
     <a class="pd-back" href="/projects">← Back to projects</a>
 
-    <div class="pd-hero">
-      {data.coverHtml
-        ? <iframe class="pd-iframe" src={data.coverHtml} title={data.title} loading="lazy"></iframe>
-        : (data.heroImage || data.thumbnail)
-          ? <img src={data.heroImage ?? data.thumbnail} alt={data.title} />
-          : <span class="phi">⬡</span>}
+    <div class="pd-top">
+      <div class="pd-hero">
+        {data.coverHtml
+          ? <iframe class="pd-iframe" src={data.coverHtml} title={data.title} loading="lazy"></iframe>
+          : (data.heroImage || data.thumbnail)
+            ? <img src={data.heroImage ?? data.thumbnail} alt={data.title} />
+            : <span class="phi">⬡</span>}
+      </div>
+
+      <div class="pd-meta">
+        <h1>{data.title}</h1>
+
+        <div class="pd-field">
+          <div class="pd-flabel">Summary</div>
+          <div class="pd-fbox pd-summary">{data.description}</div>
+        </div>
+
+        <div class="pd-field">
+          <div class="pd-flabel">Tags</div>
+          <div class="pd-fbox pd-tagbox">
+            {data.keywords.map((k) => <span class="tg">{k}</span>)}
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="pd-titlerow">
-      <h1>{data.title}</h1>
-      <span class={`flag flag-${data.flag}`} title={FLAG_LABEL[data.flag]}>
-        <span class="fdot"></span>{FLAG_LABEL[data.flag]}
-      </span>
+    <div class="pd-bottom">
+      <div class="pd-previews">
+        <div class="pd-flabel">Preview</div>
+        {data.previews && data.previews.length > 0
+          ? (
+            <ul class="pd-plist">
+              {data.previews.map((p) => {
+                const ext = isExternal(p.href);
+                return (
+                  <li>
+                    <a
+                      class="pd-plink"
+                      href={resolveHref(p.href)}
+                      {...(ext ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    >
+                      {p.label}
+                      {ext && <span class="pd-pext" aria-hidden="true">↗</span>}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          )
+          : <div class="pd-pempty">No previews yet.</div>}
+      </div>
+
+      {data.lastUpdated && (
+        <div class="pd-updated">
+          Last Updated: <span>{formatDate(data.lastUpdated)}</span>
+        </div>
+      )}
     </div>
 
-    <div class="pd-tags">
-      {data.keywords.map((k) => <span class="tg">{k}</span>)}
-    </div>
-
-    <div class="pd-body">
-      <Content />
-    </div>
+    {project.body && project.body.trim().length > 0 && (
+      <div class="pd-body">
+        <Content />
+      </div>
+    )}
 
     {data.images && data.images.length > 0 && (
       <div class="pd-gal">

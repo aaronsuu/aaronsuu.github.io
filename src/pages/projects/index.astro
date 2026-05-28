@@ -4,23 +4,12 @@ import { getCollection } from 'astro:content';
 
 const projects = (await getCollection('projects', ({ data }) => !data.draft))
   .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
-
-const FLAG_LABEL = {
-  'claude-assisted': 'Claude-Assisted',
-  'claude-researched': 'Claude-Researched',
-  'independent': 'Independent',
-} as const;
 ---
 
 <BaseLayout title="Projects — Aaron Su">
   <section class="proj-h mx">
     <h1>All <em>Projects</em></h1>
     <p>Everything I've worked on. Use the search bar to filter by keyword or technology.</p>
-    <div class="flag-legend" aria-label="AI involvement legend">
-      <span class="fl-item"><span class="flag flag-claude-assisted"><span class="fdot"></span>Claude-Assisted</span> Claude paired on code.</span>
-      <span class="fl-item"><span class="flag flag-claude-researched"><span class="fdot"></span>Claude-Researched</span> Claude helped explore concepts; code is mine.</span>
-      <span class="fl-item"><span class="flag flag-independent"><span class="fdot"></span>Independent</span> No AI involvement.</span>
-    </div>
   </section>
   <section class="gal mx">
     <div class="gg" id="gg">
@@ -33,7 +22,6 @@ const FLAG_LABEL = {
             data-title={p.data.title.toLowerCase()}
             data-desc={p.data.description.toLowerCase()}
             data-keywords={allKw.map(k => k.toLowerCase()).join('|')}
-            data-flag={p.data.flag}
             style={`animation-delay:${(i + 1) * 0.06}s`}
           >
             <div class="card-th">
@@ -42,9 +30,6 @@ const FLAG_LABEL = {
                 : p.data.thumbnail
                   ? <img src={p.data.thumbnail} alt={p.data.title} loading="lazy" />
                   : <span class="phi">⬡</span>}
-              <span class={`flag flag-${p.data.flag} card-flag`} title={FLAG_LABEL[p.data.flag]}>
-                <span class="fdot"></span>{FLAG_LABEL[p.data.flag]}
-              </span>
             </div>
             <div class="card-b">
               <h3 class="card-t">{p.data.title}</h3>

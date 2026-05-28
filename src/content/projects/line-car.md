@@ -3,10 +3,10 @@ title: Line Following Car
 description: PCB-designed photodetector arrays with PID control for autonomous line-following.
 thumbnail: /images/line-car.jpeg
 heroImage: /images/line-car.jpeg
-flag: independent
 keywords: [KiCAD, PCB Design, PID Control, Embedded, Hardware, Photodetectors, Microcontroller, Autonomous]
 minorTags: [Schematic Capture, Soldering, Sensor Fusion, Closed-Loop, Analog, C, Robotics, Prototyping, Op-Amp, EE 271]
 order: 2
+lastUpdated: 2026-05-27
 ---
 
 Designed and built an autonomous line-following car using custom PCBs and PID control.

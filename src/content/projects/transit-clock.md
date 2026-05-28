@@ -1,10 +1,14 @@
 ---
 title: Transit Clock
 description: A compact alarm-clock-sized device displaying real-time public transit arrival estimates.
-flag: claude-researched
 keywords: [ESP32, Embedded, REST API, Hardware, IoT, C++, OLED, Wi-Fi]
 minorTags: [Arduino, Microcontroller, Real-Time, JSON, HTTP, 3D Printing, Enclosure Design, Transit App, Display, Soldering]
 order: 1
+lastUpdated: 2026-05-27
+previews:
+  - { label: Code, href: transit-clock/main.ino }
+  - { label: Documentation, href: transit-clock/README.md }
+  - { label: GitHub Repo, href: 'https://github.com/aaronsuuu' }
 ---
 
 Designing and building a compact, alarm clock-sized device to display real-time public transit arrival estimates.
