@@ -3,6 +3,7 @@ title: Content Distribution Overlay (Link-State Routing)
 description: An overlay network of peer nodes that discover each other and compute shortest paths using a from-scratch link-state routing protocol with keepalive heartbeats, sequence-numbered LSA flooding, and Dijkstra over a graph of up to 32 nodes.
 keywords: [Python, Networking, TCP, Sockets, Routing, Distributed Systems, Threading]
 minorTags: ["EE 419", "Computer Networking", "Link-State Routing", "Overlay Network", "Peer-to-Peer", "Dijkstra", "LSA Flooding", "Keepalive", "Sequence Numbers", "UUID", "Graph Discovery"]
+coverHtml: /projects/link-state-routing/cover.html
 order: 1
 lastUpdated: 2026-05-27
 previews:

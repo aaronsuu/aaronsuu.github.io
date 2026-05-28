@@ -3,6 +3,7 @@ title: Custom Transport Layer over UDP
 description: A from-scratch TCP-style reliable transport protocol built on top of UDP with a three-way handshake, sliding-window ARQ, per-packet ACKs, file-ID multiplexing on a single port, and support for at least five simultaneous file transfers under 5%+ packet loss.
 keywords: [Python, Networking, UDP, Sockets, Reliable Transport, Sliding Window, ARQ, Threading]
 minorTags: ["EE 419", "Computer Networking", "Transport Layer", "TCP-like", "Three-Way Handshake", "ACK/Retransmit", "Sliding Window", "Multiplexing", "Packet Loss", "Sequence Numbers", "File Transfer"]
+coverHtml: /projects/reliable-udp-transfer/cover.html
 order: 2
 lastUpdated: 2026-05-27
 previews:
