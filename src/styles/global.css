@@ -2,21 +2,21 @@
 
 /* ═══════ DARK THEME ═══════ */
 [data-theme="dark"] {
-  --bg: #252422;
-  --bg-card: #302e2a;
-  --bg-surface: #3a3733;
-  --border: #4a4640;
-  --border-light: #5a5650;
+  --bg: #595959;
+  --bg-card: #686868;
+  --bg-surface: #767676;
+  --border: #828282;
+  --border-light: #909090;
   --text: #FFFCF2;
-  --text-dim: #d4d1c7;
-  --text-muted: #9e9b91;
-  --text-faint: #706d65;
+  --text-dim: #e8e6e0;
+  --text-muted: #c0bdb8;
+  --text-faint: #9a9794;
   --orange: #89cff0;
   --orange-dim: #5fb8e8;
   --orange-glow: rgba(137,207,240,0.12);
-  --nav-bg: rgba(37,36,34,0.88);
-  --overlay-bg: rgba(37,36,34,0.75);
-  --shadow: rgba(0,0,0,0.3);
+  --nav-bg: rgba(89,89,89,0.88);
+  --overlay-bg: rgba(89,89,89,0.75);
+  --shadow: rgba(0,0,0,0.25);
 }
 
 /* ═══════ LIGHT THEME ═══════ */
