@@ -52,7 +52,9 @@ const resolveHref = (href: string) =>
         <div class="pd-field">
           <div class="pd-flabel">Tags</div>
           <div class="pd-fbox pd-tagbox">
-            {data.keywords.map((k) => <span class="tg">{k}</span>)}
+            {data.keywords.map((k) => (
+              <a class="tg" href={`/projects?q=${encodeURIComponent(k)}`}>{k}</a>
+            ))}
           </div>
         </div>
       </div>
