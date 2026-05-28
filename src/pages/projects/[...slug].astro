@@ -22,7 +22,10 @@ const formatDate = (d?: Date) => {
 };
 
 const isExternal = (href: string) => /^https?:\/\//.test(href);
-const resolveHref = (href: string) => (isExternal(href) ? href : `/view/${href.replace(/^\/+/, '')}`);
+const resolveHref = (href: string) =>
+  isExternal(href) || href.startsWith('/')
+    ? href
+    : `/view/${href}`;
 ---
 
 <BaseLayout title={`${data.title} — Aaron Su`} description={data.description}>
