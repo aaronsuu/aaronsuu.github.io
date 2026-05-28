@@ -3,7 +3,7 @@ title: Wi-Fi Transmitter & Receiver
 description: Python implementation of a layered Wi-Fi PHY — interleaving, convolutional coding, QAM, OFDM, and packet detection over AWGN.
 coverHtml: /projects/wifi/cover.html
 keywords: [Python, NumPy, DSP, OFDM, Wi-Fi, Signal Processing, Viterbi, AWGN]
-minorTags: ["802.11", FFT, QAM, Convolutional Coding, Packet Detection, Modulation, Demodulation, IFFT, Preamble Detection, EE 419]
+minorTags: ["EE 419", "Computer Networking", "802.11", FFT, QAM, Convolutional Coding, Packet Detection, Modulation, Demodulation, IFFT, Preamble Detection]
 order: 0
 lastUpdated: 2026-05-27
 ---
