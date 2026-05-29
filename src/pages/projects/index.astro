@@ -1,9 +1,28 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+
+// Read rankings from CSV — edit src/data/projects.csv to reorder or promote projects
+const csvURL = new URL('../../data/projects.csv', import.meta.url);
+const csvLines = readFileSync(fileURLToPath(csvURL), 'utf-8').trim().split('\n').slice(1);
+
+type RankEntry = { rank: string; lastUpdated: string };
+const rankMap: Record<string, RankEntry> = {};
+for (const line of csvLines) {
+  const [id, rank, lastUpdated] = line.split(',').map(s => s.trim());
+  if (id) rankMap[id] = { rank, lastUpdated };
+}
+
+const rankOrder = (id: string) => {
+  const rank = rankMap[id]?.rank ?? '';
+  const n = parseInt(rank.replace('P', ''));
+  return isNaN(n) ? 999 : n;
+};
 
 const projects = (await getCollection('projects', ({ data }) => !data.draft))
-  .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
+  .sort((a, b) => rankOrder(a.id) - rankOrder(b.id));
 ---
 
 <BaseLayout title="Projects — Aaron Su">
@@ -15,15 +34,18 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft))
     <div class="gg" id="gg">
       {projects.map((p, i) => {
         const allKw = [...p.data.keywords, ...(p.data.minorTags ?? [])];
+        const rank = rankMap[p.id]?.rank ?? '';
+        const flagship = rank === 'P1';
         return (
           <a
-            class="card"
+            class={flagship ? 'card flagship' : 'card'}
             href={`/projects/${p.id}`}
             data-title={p.data.title.toLowerCase()}
             data-desc={p.data.description.toLowerCase()}
             data-keywords={allKw.map(k => k.toLowerCase()).join('|')}
             style={`animation-delay:${(i + 1) * 0.06}s`}
           >
+            {flagship && <span class="flagship-badge">Flagship</span>}
             <div class="card-th">
               {p.data.coverHtml
                 ? <iframe class="card-iframe" src={p.data.coverHtml} title={p.data.title} loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
