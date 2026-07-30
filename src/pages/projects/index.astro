@@ -1,12 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
+// Read rankings from CSV — edit src/data/projects.csv to reorder or promote projects.
+// Imported as a raw string so the contents are inlined at build time; reading from
+// disk at runtime breaks in production, where this module is bundled into dist/.
+import csvRaw from '../../data/projects.csv?raw';
 
-// Read rankings from CSV — edit src/data/projects.csv to reorder or promote projects
-const csvURL = new URL('../../data/projects.csv', import.meta.url);
-const csvLines = readFileSync(fileURLToPath(csvURL), 'utf-8').trim().split('\n').slice(1);
+const csvLines = csvRaw.trim().split('\n').slice(1);
 
 type RankEntry = { rank: string; lastUpdated: string };
 const rankMap: Record<string, RankEntry> = {};
