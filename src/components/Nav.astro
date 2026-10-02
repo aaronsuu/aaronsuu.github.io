@@ -2,8 +2,6 @@
 const { pathname } = Astro.url;
 const isHome = pathname === '/' || pathname === '';
 const isProjects = pathname.startsWith('/projects');
-const isUses = pathname.startsWith('/uses');
-const isThanks = pathname.startsWith('/thanks');
 ---
 
 <nav class="nav">
@@ -16,10 +14,7 @@ const isThanks = pathname.startsWith('/thanks');
     </form>
     <span class="rc" id="rc"></span>
     <a class={`nl${isHome ? ' active' : ''}`} href="/">Home</a>
-    <a class={`nl${isProjects ? ' active' : ''}`} href="/projects">Projects</a>
-    <a class={`nl${isUses ? ' active' : ''}`} href="/uses">Uses</a>
-    <a class={`nl${isThanks ? ' active' : ''}`} href="/thanks">Thanks</a>
-    <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">
+    <a class={`nl${isProjects ? ' active' : ''}`} href="/projects">Projects</a>    <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">
       <svg class="moon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21.75 15.5a9.72 9.72 0 0 1-13.24-13.24A10 10 0 1 0 21.75 15.5z"/></svg>
       <svg class="sun" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2m10-10h-2M4 12H2m15.07-7.07-1.41 1.41M8.34 15.66l-1.41 1.41m0-12.73 1.41 1.41m7.32 7.32 1.41 1.41"/></svg>
     </button>

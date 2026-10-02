@@ -268,34 +268,6 @@ a.tg:hover { opacity: 1; background: var(--bg-surface); border-color: var(--oran
 .vw-code pre { padding: 20px 22px !important; margin: 0 !important; font-size: 0.85rem; line-height: 1.6; overflow-x: auto; }
 .vw-code code { font-family: var(--fm); }
 
-/* ═══════ USES ═══════ */
-.uses-w { max-width: 860px; margin: 0 auto; padding: 80px 48px 100px; }
-.uses-w h1 { font-family: var(--fd); font-size: clamp(1.8rem,3.5vw,2.6rem); margin-bottom: 12px; }
-.uses-w h1 em { font-style: italic; color: var(--orange); }
-.uses-w > p { color: var(--text-muted); font-size: 1.05rem; line-height: 1.8; margin-bottom: 56px; }
-.ucat { margin-bottom: 48px; }
-.ucat-t { font-family: var(--fm); font-size: 0.72rem; color: var(--orange); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-.uitm { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--border); }
-.uitm:last-child { border-bottom: none; }
-.uitm-n { font-weight: 600; color: var(--text); font-size: 0.95rem; }
-.uitm-d { color: var(--text-faint); font-size: 0.85rem; text-align: right; max-width: 50%; }
-
-/* ═══════ ACK ═══════ */
-.ack-w { max-width: 780px; margin: 0 auto; padding: 80px 48px 100px; }
-.ack-intro { text-align: center; margin-bottom: 56px; }
-.ack-intro h1 { font-family: var(--fd); font-size: clamp(1.8rem,3.5vw,2.6rem); margin-bottom: 16px; line-height: 1.2; }
-.ack-intro h1 em { font-style: italic; color: var(--orange); }
-.ack-intro p { font-size: 1.05rem; color: var(--text-muted); line-height: 1.8; max-width: 560px; margin: 0 auto; }
-.ack-p { padding: 28px 0; border-bottom: 1px solid var(--border); display: flex; gap: 24px; align-items: flex-start; }
-.ack-p:last-child { border-bottom: none; }
-.ack-av { width: 56px; height: 56px; border-radius: 50%; background: var(--bg-card); border: 2px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: var(--fd); font-size: 1.2rem; color: var(--orange); overflow: hidden; }
-.ack-n { font-family: var(--fd); font-size: 1.15rem; margin-bottom: 2px; }
-.ack-n a { color: var(--text); }
-.ack-n a:hover { color: var(--orange); }
-.ack-r { font-family: var(--fm); font-size: 0.73rem; color: var(--orange); margin-bottom: 8px; }
-.ack-r a { color: var(--orange); }
-.ack-note { font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
-
 .footer { text-align: center; padding: 32px 48px; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--text-faint); font-family: var(--fm); transition: border-color 0.4s; }
 
 /* ═══════ RESPONSIVE ═══════ */
@@ -323,9 +295,4 @@ a.tg:hover { opacity: 1; background: var(--bg-surface); border-color: var(--oran
   .pd-top, .pd-bottom { grid-template-columns: 1fr; gap: 20px; }
   .pd-updated { justify-self: start; text-align: left; }
   .vw-w { padding: 32px 20px 80px; }
-  .uses-w { padding: 48px 20px 80px; }
-  .uitm { flex-direction: column; gap: 4px; }
-  .uitm-d { text-align: left; max-width: 100%; }
-  .ack-w { padding: 48px 20px 80px; }
-  .ack-p { flex-direction: column; gap: 12px; }
 }
