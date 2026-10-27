@@ -8,6 +8,10 @@ interface Props {
 }
 
 const { title = 'Aaron Su — Portfolio', description = 'Electrical & computer engineering student at UW.' } = Astro.props;
+
+// Cloudflare Web Analytics site token (dash.cloudflare.com → Analytics & Logs → Web Analytics).
+// The beacon is only rendered once this is set.
+const CF_ANALYTICS_TOKEN = '71b960e5c6824f20a87002ba2e58ac20';
 ---
 
 <!DOCTYPE html>
@@ -26,6 +30,9 @@ const { title = 'Aaron Su — Portfolio', description = 'Electrical & computer e
   <body>
     <Nav />
     <slot />
-    <footer class="footer">Aaron Su · Seattle, WA · 2026</footer>
+    <footer class="footer">Aaron Su · Seattle, WA · 2026 · <a href="/privacy" class="footer-link">Privacy</a></footer>
+    {CF_ANALYTICS_TOKEN && (
+      <script is:inline defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={JSON.stringify({ token: CF_ANALYTICS_TOKEN })}></script>
+    )}
   </body>
 </html>
