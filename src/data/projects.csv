@@ -4,3 +4,7 @@ link-state-routing,P1,2026-05-28
 reliable-udp-transfer,P1,2026-05-28
 frc,P4,2026-05-28
 line-car,P3,2026-05-28
+ta-feedback-bertopic,P2,2026-11-09
+ta-feedback-lda-lsa-nmf,P2,2026-11-09
+newsgroups-kmeans,P3,2026-11-09
+mental-health-text-cleaning,P4,2026-11-09
