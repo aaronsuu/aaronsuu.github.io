@@ -1,6 +1,6 @@
 ---
 title: Unsupervised Topic Discovery on 20 Newsgroups
-description: Cleans raw Usenet posts, compares count and TF-IDF embeddings through PCA, picks k with silhouette and WCSS, and scores 4-cluster k-Means against the known labels using Hungarian matching. Result: 68.5% overall accuracy and 0.703 macro F1, stable across random seeds.
+description: "Cleans raw Usenet posts, compares count and TF-IDF embeddings through PCA, picks k with silhouette and WCSS, and scores 4-cluster k-Means against the known labels using Hungarian matching. Result: 68.5% overall accuracy and 0.703 macro F1, stable across random seeds."
 coverHtml: /projects/newsgroups-kmeans/cover.html
 keywords: [Python, scikit-learn, k-Means, PCA, TF-IDF, Clustering, NLP, Regex]
 minorTags: ["EE 400", "Natural Language Processing", "20 Newsgroups", "Bag-of-Words", "Silhouette Score", "WCSS", "Elbow Method", "Hungarian Algorithm", "Macro F1", "Precision/Recall", "Hyperparameter Sweep", "spaCy", "Lemmatization", "Yellowbrick", "Data Cleaning"]
