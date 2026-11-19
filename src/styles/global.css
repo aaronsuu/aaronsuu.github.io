@@ -244,6 +244,7 @@ a.tg:hover { opacity: 1; background: var(--bg-surface); border-color: var(--oran
 .pd-body li { margin-bottom: 6px; }
 .pd-body h2, .pd-body h3 { font-family: var(--fd); color: var(--text); margin: 32px 0 14px; }
 .pd-body table { width: 100%; border-collapse: collapse; margin: 20px 0 28px; font-size: 0.92rem; }
+.pd-body img { display: block; max-width: 100%; height: auto; margin: 18px 0 24px; border-radius: 6px; }
 .pd-body thead tr { background: var(--bg-surface); }
 .pd-body th { font-family: var(--fm); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 600; padding: 10px 14px; text-align: left; border-bottom: 2px solid var(--border); }
 .pd-body td { padding: 9px 14px; border-bottom: 1px solid var(--border); color: var(--text-dim); vertical-align: top; }

@@ -16,7 +16,14 @@ const LANG_BY_EXT: Record<string, string> = {
 };
 
 export async function getStaticPaths() {
-  const modules = import.meta.glob('/src/code/**/*.*', {
+  // Every match becomes a public page, so never publish keys/certs or binary files.
+  const modules = import.meta.glob([
+    '/src/code/**/*.*',
+    '!/src/code/**/certs/**',
+    '!/src/code/**/*.{key,pem,crt,csr,p12}',
+    '!/src/code/**/*.{pdf,png,PNG,jpg,jpeg,gif,ico,zip,pyc}',
+    '!/src/code/**/__pycache__/**',
+  ], {
     eager: true,
     query: '?raw',
     import: 'default',

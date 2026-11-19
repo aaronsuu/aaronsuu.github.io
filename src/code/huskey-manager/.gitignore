@@ -1,0 +1,7 @@
+.env
+certs/
+webapp/vendor/
+webapp/composer.lock
+.DS_Store
+__pycache__/
+.pytest_cache/
