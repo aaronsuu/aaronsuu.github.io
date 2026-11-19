@@ -47,6 +47,10 @@ A password manager is the worst place to have a security bug: one flaw exposes e
 
 **8. Credentials at rest and in logs.** Passwords are stored as **bcrypt** hashes. A **Monolog/Loggly** audit trail records logins, lockouts, blocked downloads and unauthorized vault actions, with the user and IP but never the submitted password. That way an incident can be traced afterwards without the logs becoming a second leak.
 
+**9. Credentials sent in plain text.** The app ran over plain HTTP, so anyone on the same network could read every login. A Wireshark capture showed the username and password in the clear. nginx now serves the app only over **HTTPS (TLS)**, and the same capture shows only encrypted bytes.
+
+![Wireshark capture of a login: readable username and password over HTTP (left), encrypted bytes over HTTPS (right)](/projects/huskey/tls-before-after.png)
+
 ### Proving it
 
 A fix I can't demonstrate is a guess. The test suite (**pytest + Selenium + requests**, 27 tests, about 20 seconds) runs against the live Docker stack, and every test *is* an attack:
@@ -62,10 +66,3 @@ A fix I can't demonstrate is a guess. The test suite (**pytest + Selenium + requ
 Some tests check the opposite as well: a user can still open, and download from, their *own* vault, so a fix that simply blocks everything would fail.
 
 ![All 27 regression tests passing](/projects/huskey/pytest-passing.png)
-
-### What I'd keep doing
-
-- **Find the trust boundary first.** Every bug here came down to trusting the client: its SQL, its cookies, its IDs, its file paths, its filenames. Once I asked "what is the server believing that it shouldn't?", the right fix was usually obvious.
-- **Authorize actions, not pages.** Checking permissions when a page loads is not the same as checking them on every request that changes data.
-- **Layer defences.** The upload fix doesn't depend on any single check being perfect.
-- **Test the attack, not the happy path.** A regression suite that replays real exploits catches the bug that quietly comes back in the next refactor.
