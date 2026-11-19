@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+// Add a post: drop a .md file in src/content/writing/ with title, description, date.
+// Set `draft: true` to keep it off the site while editing.
+const posts = (await getCollection('writing', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+---
+
+<BaseLayout title="Writing — Aaron Su" description="Essays and notes by Aaron Su on engineering, machine learning, and embedded systems.">
+  <section class="proj-h mx">
+    <h1>Writing</h1>
+    <p>Essays and notes on engineering, machine learning, and what I learn building things.</p>
+  </section>
+  <section class="gal mx">
+    {posts.length === 0
+      ? <p class="wr-empty">Nothing published yet. The first piece is on its way.</p>
+      : (
+        <div class="wr-list">
+          {posts.map((p) => (
+            <a class="wr-item" href={`/writing/${p.id}`}>
+              <div class="wr-date">{fmt(p.data.date)}</div>
+              <h2 class="wr-title">{p.data.title}</h2>
+              <p class="wr-desc">{p.data.description}</p>
+            </a>
+          ))}
+        </div>
+      )}
+  </section>
+</BaseLayout>

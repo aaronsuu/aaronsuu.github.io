@@ -95,11 +95,8 @@ a:hover { opacity: 0.8; }
 .slabel { font-family: var(--fm); font-size: 0.72rem; color: var(--orange); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 32px; display: flex; align-items: center; gap: 14px; }
 .slabel::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-/* ═══════ TYPEWRITER ═══════ */
-.tw-wrap { display: inline-block; }
-#tw { color: var(--orange); font-style: italic; }
-.tw-cur { display: inline-block; width: 3px; height: 1.05em; background: var(--orange); margin-left: 3px; vertical-align: text-bottom; border-radius: 2px; animation: blink 0.7s infinite; }
-@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+/* ═══════ HERO ROLE ═══════ */
+.hero-role { display: block; margin-top: 10px; font-size: clamp(1.15rem,2.2vw,1.5rem); line-height: 1.35; color: var(--orange); font-style: italic; }
 
 /* Status */
 .status { display: inline-flex; align-items: center; gap: 10px; margin-top: 20px; padding: 10px 20px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 50px; font-size: 0.82rem; color: var(--text-dim); transition: background 0.4s, border-color 0.4s; }
@@ -160,6 +157,24 @@ a:hover { opacity: 0.8; }
 
 /* ═══════ SKILLS ═══════ */
 .skills { padding: 0 48px 80px; }
+
+/* ═══════ FEATURED (home) ═══════ */
+.featured { padding: 0 48px 72px; }
+.feat-all { display: inline-block; margin-top: 24px; font-family: var(--fm); font-size: 0.8rem; color: var(--orange); }
+
+/* ═══════ WRITING ═══════ */
+.wr-list { display: flex; flex-direction: column; gap: 18px; }
+.wr-item { display: block; padding: 22px 24px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); color: inherit; text-decoration: none; transition: border-color var(--tr), transform var(--tr); }
+.wr-item:hover { border-color: var(--border-light); transform: translateY(-3px); opacity: 1; }
+.wr-date { font-family: var(--fm); font-size: 0.72rem; color: var(--text-muted); margin-bottom: 6px; }
+.wr-title { font-family: var(--fd); font-size: 1.3rem; margin-bottom: 6px; }
+.wr-desc { font-size: 0.9rem; color: var(--text-muted); }
+.wr-empty { padding: 48px 0; color: var(--text-muted); }
+.post { max-width: 720px; margin: 0 auto; padding: 64px 48px 100px; }
+.post h1 { font-family: var(--fd); font-size: clamp(2rem,4vw,2.6rem); line-height: 1.2; margin: 18px 0 10px; }
+.post-body { margin-top: 36px; font-size: 1.05rem; line-height: 1.8; }
+.post-body p, .post-body ul, .post-body ol { margin-bottom: 1.2em; }
+.post-body h2 { font-family: var(--fd); font-size: 1.5rem; margin: 1.6em 0 0.6em; }
 .sk-grid { display: flex; flex-wrap: wrap; gap: 10px; }
 .sk { font-family: var(--fm); font-size: 0.78rem; padding: 8px 18px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 50px; color: var(--text-dim); cursor: default; transition: border-color var(--tr), color var(--tr), background var(--tr); }
 .sk:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-glow); }
@@ -297,6 +312,8 @@ a.tg:hover { opacity: 1; background: var(--bg-surface); border-color: var(--oran
   .int-grid { grid-template-columns: 1fr; gap: 24px; }
   .info { grid-template-columns: 1fr; padding: 48px 20px 60px; gap: 48px; }
   .skills { padding: 0 20px 60px; }
+  .featured { padding: 0 20px 56px; }
+  .post { padding: 48px 20px 72px; }
   .cta { padding: 0 20px 80px; }
   .proj-h { padding: 48px 20px 32px; }
   .gal { padding: 0 20px 60px; }

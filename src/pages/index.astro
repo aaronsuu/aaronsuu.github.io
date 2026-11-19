@@ -1,12 +1,16 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { getRankedProjects, getRank } from '../lib/projects';
+
+const featured = (await getRankedProjects()).filter((p) => getRank(p.id) === 'P1');
 ---
 
 <BaseLayout title="Aaron Su — Portfolio">
   <section class="hero mx">
     <div class="hero-txt">
       <p class="greet">Hello, I'm</p>
-      <h1>Aaron Su<br><span class="tw-wrap"><span id="tw"></span><span class="tw-cur"></span></span></h1>
+      <h1>Aaron Su<br><span class="hero-role">Software Engineering with a focus on AI &amp; Embedded Systems</span></h1>
       <p class="tag">Electrical &amp; computer engineering student at the <a href="https://www.ece.uw.edu/" target="_blank">University of Washington</a>, specializing in machine learning for sensor and embedded systems. I design circuits, train models, and build things that bridge hardware and software.</p>
       <div class="status"><span class="dot"></span> Currently: <strong>Seeking Summer 2027 internships</strong> · Previously <a href="https://xmouyang.github.io/" target="_blank" style="color:inherit;border-bottom:1px solid var(--border)">MINSys Lab</a>, HKUST &amp; <a href="http://uwseal.com/" target="_blank" style="color:inherit;border-bottom:1px solid var(--border)">SEAL Lab</a>, UW</div>
       <div class="contacts">
@@ -21,6 +25,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 
+  <section class="featured mx">
+    <div class="slabel">Featured Work</div>
+    <div class="gg">
+      {featured.map((p, i) => <ProjectCard project={p} index={i} />)}
+    </div>
+    <a class="feat-all" href="/projects">All projects →</a>
+  </section>
+
   <div class="divider"></div>
 
   <section class="bio mx">
@@ -28,7 +40,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <div class="bio-grid">
       <div>
         <p>I'm an <strong>Electrical &amp; Computer Engineering</strong> student at the <a href="https://www.ece.uw.edu/" target="_blank"><em>University of Washington</em></a> with minors in <a href="https://dataminor.uw.edu/" target="_blank"><em>Data Science</em></a> and <a href="https://ischool.uw.edu/" target="_blank"><em>Informatics</em></a>. My work spans hardware and machine learning, from designing PCBs and programming microcontrollers to multimodal deep learning and network protocols built from scratch.</p>
-        <p>At the <a href="http://uwseal.com/" target="_blank"><strong>SEAL Lab</strong></a> I built internal tooling for a ~120-person research group: a Playwright automation that monitors software license usage across shared workstations used by 60+ researchers, a cost model that saved the lab roughly $1,500, and three prompt-engineered LLM assistants over an Obsidian knowledge base that cut onboarding time for new members. In summer 2026 I interned at the <a href="https://xmouyang.github.io/" target="_blank"><strong>MINSys Lab</strong></a> at the <a href="https://hkust.edu.hk/" target="_blank">Hong Kong University of Science and Technology (HKUST)</a>, building multimodal human activity recognition models for the CUHK-X Challenge. That work was selected for a poster presentation at ACM UbiComp-ISWC 2026 in Shanghai.</p>
+        <p>At the <a href="http://uwseal.com/" target="_blank"><strong>SEAL Lab</strong></a> I built internal tooling for a ~120-person research group: a Playwright automation that monitors software license usage across shared workstations used by 60+ researchers, a cost model that saved the lab roughly $1,500, and three prompt-engineered LLM assistants over an Obsidian knowledge base that cut new-member onboarding from 7 days to 3 days on average. In summer 2026 I interned at the <a href="https://xmouyang.github.io/" target="_blank"><strong>MINSys Lab</strong></a> at the <a href="https://hkust.edu.hk/" target="_blank">Hong Kong University of Science and Technology (HKUST)</a>, building multimodal human activity recognition models for the CUHK-X Challenge. That work was selected for a poster presentation at ACM UbiComp-ISWC 2026 in Shanghai.</p>
       </div>
       <div>
         <p>Alongside engineering, I've been a <strong>licensed Emergency Medical Responder</strong> with <strong>Community First Responders</strong> for the <strong>City of Richmond</strong> since 2022, holding full <a href="https://www2.gov.bc.ca/gov/content/health/about-bc-s-health-care-system/partners/colleges-boards-and-commissions/emergency-medical-assistants-licensing-board/licensing" target="_blank">EMALB Schedule 2 endorsements</a>. Over four years I've treated more than 150 patients and supervised first response teams at large-scale events. It's taught me how to stay calm under pressure, communicate with clarity, and make decisions when the stakes are real.</p>
@@ -48,12 +60,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <div class="ti-sub"><a href="https://www.ece.uw.edu/" target="_blank">University of Washington</a> — Seattle, WA</div>
         <div class="ti-desc">Minors in <a href="https://dataminor.uw.edu/" target="_blank">Data Science</a> and <a href="https://ischool.uw.edu/" target="_blank">Informatics</a>. Coursework includes Computer Programming III, PCB Design, Data Science I, Signals &amp; Systems, Probability I, 3D Printing, Cybersecurity, and Computer-Communication Networks.</div>
       </div>
-      <div class="ti">
-        <div class="ti-date">Sept 2019 — Jun 2024</div>
-        <div class="ti-title">High School Diploma with Honours</div>
-        <div class="ti-sub">J.N. Burnett Secondary School — Richmond, BC</div>
-        <div class="ti-desc">GPA: 94/100. Awarded the Member of Parliament Scholarship and the Excellence in Engineering Award.</div>
-      </div>
     </div>
     <div>
       <div class="slabel">Experience</div>
@@ -61,14 +67,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <div class="ti-date">Jun 2026 — Aug 2026</div>
         <div class="ti-title">Research Intern — Machine Learning &amp; AI</div>
         <div class="ti-sub"><a href="https://xmouyang.github.io/" target="_blank">MINSys Lab</a> — <a href="https://hkust.edu.hk/" target="_blank">HKUST</a>, Hong Kong</div>
-        <div class="ti-desc">Research intern under Prof. Xiaomin Ouyang. Developed multimodal human activity recognition models in PyTorch for the CUHK-X Challenge (CUHK AIoT Lab), a 40-class benchmark across skeleton, IMU, infrared, thermal, and depth modalities. The work was <strong>selected for poster presentation at ACM UbiComp-ISWC 2026</strong> in Shanghai. Built preprocessing pipelines that handled differing sampling rates, temporal alignment, and per-channel normalization across five sensor streams, and trained five sensor-specific transformer encoders on data from 9 subjects, with an auxiliary head per sensor and a validation-tuned blend of fused and per-sensor predictions. Fixed a subject leak in the evaluation and moved to 3-fold cross-subject validation; a 3-fold ensemble reached 0.565 cross-subject accuracy and 0.55 on the Kaggle leaderboard.</div>
+        <div class="ti-desc">Research intern under Prof. Xiaomin Ouyang. Built a five-sensor PyTorch transformer (skeleton, IMU, infrared, thermal, depth) for the 40-class CUHK-X activity recognition challenge, <strong>selected for poster presentation at ACM UbiComp-ISWC 2026</strong>. Found and fixed a subject leak in the evaluation and moved to 3-fold cross-subject validation; the final ensemble reached 0.565 cross-subject accuracy and 0.55 on the Kaggle leaderboard, up from 0.40. <a href="/projects/cuhk-x-har">Full writeup →</a></div>
         <div class="ti-badges"><span class="badge">Edge AI</span><span class="badge">Computer Vision</span><span class="badge">Deep Learning</span><span class="badge">PyTorch</span><span class="badge">Multimodal</span></div>
       </div>
       <div class="ti">
         <div class="ti-date">Sept 2025 — Jun 2026</div>
         <div class="ti-title">Student Researcher, AI Engineer</div>
         <div class="ti-sub"><a href="http://uwseal.com/" target="_blank">SEAL Lab</a> — University of Washington</div>
-        <div class="ti-desc">Built a Playwright automation that pulls software license usage across shared workstations serving 60+ researchers, and a cost model on that data that saved the lab ~$1,500. Deployed three prompt-engineered LLM assistants over a structured Obsidian knowledge base, cutting new-member onboarding time for a ~120-person lab.</div>
+        <div class="ti-desc">Built a Playwright automation that pulls software license usage across shared workstations serving 60+ researchers, and a cost model on that data that saved the lab ~$1,500. Deployed three prompt-engineered LLM assistants over a structured Obsidian knowledge base, cutting new-member onboarding from 7 days to 3 days on average for a ~120-person lab.</div>
         <div class="ti-badges"><span class="badge">Python</span><span class="badge">JavaScript</span><span class="badge">Playwright</span><span class="badge">LLMs</span><span class="badge">Automation</span></div>
       </div>
       <div class="ti">
@@ -85,6 +91,27 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <div class="ti-badges"><span class="badge">Fusion 360</span><span class="badge">CNC</span><span class="badge">CAD</span></div>
       </div>
     </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="skills mx" style="padding-top:64px;">
+    <div class="slabel">Technologies &amp; Skills</div>
+    <div class="sk-grid">
+      <span class="sk">Python</span><span class="sk">C/C++</span><span class="sk">Java</span><span class="sk">JavaScript</span><span class="sk">SQL</span><span class="sk">R</span><span class="sk">MATLAB</span><span class="sk">PyTorch</span><span class="sk">NumPy</span><span class="sk">Machine Learning</span><span class="sk">LLMs</span><span class="sk">Playwright</span><span class="sk">pytest</span><span class="sk">Docker</span><span class="sk">Git</span><span class="sk">Fusion 360</span><span class="sk">AutoCAD</span><span class="sk">KiCAD</span><span class="sk">MultiSIM</span><span class="sk">PCB Design</span><span class="sk">ESP32</span><span class="sk">Arduino</span><span class="sk">CNC Fabrication</span><span class="sk">3D Printing</span>
+    </div>
+    <div class="slabel" style="margin-top:40px;">Languages</div>
+    <div class="sk-grid">
+      <span class="sk">English (Native)</span><span class="sk">Cantonese (Native)</span><span class="sk">Mandarin (Limited Working)</span><span class="sk">Japanese (Elementary)</span>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="cta mx" style="padding-top:64px;">
+    <h2>See what I've built</h2>
+    <p>Browse my projects, filtered by technology or keyword.</p>
+    <a class="cta-btn" href="/projects">View Projects <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="9" x2="14" y2="9"/><polyline points="10,5 14,9 10,13"/></svg></a>
   </section>
 
   <div class="divider"></div>
@@ -114,49 +141,5 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
     </div>
   </section>
-
-  <div class="divider"></div>
-
-  <section class="skills mx" style="padding-top:64px;">
-    <div class="slabel">Technologies &amp; Skills</div>
-    <div class="sk-grid">
-      <span class="sk">Python</span><span class="sk">Java</span><span class="sk">JavaScript</span><span class="sk">R</span><span class="sk">MATLAB</span><span class="sk">PyTorch</span><span class="sk">NumPy</span><span class="sk">Machine Learning</span><span class="sk">LLMs</span><span class="sk">Playwright</span><span class="sk">Git</span><span class="sk">Obsidian</span><span class="sk">Fusion 360</span><span class="sk">AutoCAD</span><span class="sk">KiCAD</span><span class="sk">MultiSIM</span><span class="sk">PCB Design</span><span class="sk">ESP32</span><span class="sk">CNC Fabrication</span><span class="sk">3D Printing</span><span class="sk">Adobe Creative Suite</span>
-    </div>
-    <div class="slabel" style="margin-top:40px;">Languages</div>
-    <div class="sk-grid">
-      <span class="sk">English (Native)</span><span class="sk">Cantonese (Native)</span><span class="sk">Mandarin (Limited Working)</span><span class="sk">Japanese (Elementary)</span>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <section class="cta mx" style="padding-top:64px;">
-    <h2>See what I've built</h2>
-    <p>Browse my projects, filtered by technology or keyword.</p>
-    <a class="cta-btn" href="/projects">View Projects <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="9" x2="14" y2="9"/><polyline points="10,5 14,9 10,13"/></svg></a>
-  </section>
 </BaseLayout>
 
-<script is:inline>
-  (function () {
-    var TITLES = ["ML Engineer","Software Engineer","Computer Engineer","Electrical Engineer"];
-    var el = document.getElementById('tw');
-    if (!el) return;
-    var ti = 0, ci = 0, del = false;
-    function t() {
-      var cur = TITLES[ti];
-      if (!del) {
-        el.textContent = cur.substring(0, ci + 1);
-        ci++;
-        if (ci === cur.length) { del = true; setTimeout(t, 2000); return; }
-        setTimeout(t, 70);
-      } else {
-        el.textContent = cur.substring(0, ci - 1);
-        ci--;
-        if (ci === 0) { del = false; ti = (ti + 1) % TITLES.length; setTimeout(t, 400); return; }
-        setTimeout(t, 40);
-      }
-    }
-    setTimeout(t, 600);
-  })();
-</script>

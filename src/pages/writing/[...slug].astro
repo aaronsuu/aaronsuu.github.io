@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('writing', ({ data }) => !data.draft);
+  return posts.map((p) => ({ params: { slug: p.id }, props: { post: p } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const { data } = post;
+const date = data.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+---
+
+<BaseLayout title={`${data.title} — Aaron Su`} description={data.description}>
+  <article class="post">
+    <a class="pd-back" href="/writing">← All writing</a>
+    <h1>{data.title}</h1>
+    <div class="wr-date">{date}{data.linkedinUrl && <> · <a href={data.linkedinUrl} target="_blank">Discuss on LinkedIn</a></>}</div>
+    <div class="post-body">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

@@ -1,0 +1,38 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getRank } from '../lib/projects';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  index: number;
+}
+
+const { project: p, index } = Astro.props;
+const allKw = [...p.data.keywords, ...(p.data.minorTags ?? [])];
+const flagship = getRank(p.id) === 'P1';
+---
+
+<a
+  class={flagship ? 'card flagship' : 'card'}
+  href={`/projects/${p.id}`}
+  data-title={p.data.title.toLowerCase()}
+  data-desc={p.data.description.toLowerCase()}
+  data-keywords={allKw.map((k) => k.toLowerCase()).join('|')}
+  style={`animation-delay:${(index + 1) * 0.06}s`}
+>
+  {flagship && <span class="flagship-badge">Flagship</span>}
+  <div class="card-th">
+    {p.data.coverHtml
+      ? <iframe class="card-iframe" src={p.data.coverHtml} title={p.data.title} loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+      : p.data.thumbnail
+        ? <img src={p.data.thumbnail} alt={p.data.title} loading="lazy" />
+        : <span class="phi">⬡</span>}
+  </div>
+  <div class="card-b">
+    <h3 class="card-t">{p.data.title}</h3>
+    <p class="card-d">{p.data.description}</p>
+    <div class="tags">
+      {p.data.keywords.map((k) => <span class="tg" data-kw={k.toLowerCase()}>{k}</span>)}
+    </div>
+  </div>
+</a>
