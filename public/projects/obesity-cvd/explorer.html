@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Obesity vs. Cardiovascular Death Rates — Explorer</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+:root{--bg:#FFFCF2;--card:#fff;--text:#252422;--mute:#6b6760;--line:rgba(37,36,34,.14);--acc:#EB5E28}
+@media(prefers-color-scheme:dark){:root{--bg:#252422;--card:#302e2a;--text:#FFFCF2;--mute:#a8a49b;--line:rgba(255,252,242,.16)}}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--text);font:16px/1.5 'Source Sans 3',sans-serif;padding:20px 16px 40px;max-width:1100px;margin:0 auto}
+h1{font:700 26px 'Playfair Display',serif;margin-bottom:4px}
+.sub{color:var(--mute);font-size:14px;margin-bottom:16px}
+.bar{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;margin-bottom:12px}
+.grp{display:flex;gap:6px;align-items:center}
+.lbl{font:12px 'IBM Plex Mono',monospace;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
+button{font:13px 'IBM Plex Mono',monospace;background:transparent;color:var(--text);border:1px solid var(--line);border-radius:50px;padding:5px 14px;cursor:pointer}
+button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+input[type=range]{accent-color:var(--acc);width:200px}
+#yr{font:600 18px 'IBM Plex Mono',monospace;min-width:48px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:12px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+.stat b{display:block;font:600 24px 'IBM Plex Mono',monospace;color:var(--acc)}
+.stat span{font-size:13px;color:var(--mute)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px}
+.maps{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:760px){.maps{grid-template-columns:1fr}}
+.note{font-size:13px;color:var(--mute);margin-top:12px}
+.hide{display:none}
+</style>
+</head>
+<body>
+<h1>Obesity vs. Cardiovascular Death Rates</h1>
+<p class="sub">51 states + DC, 2011–2019 · CDC BRFSS obesity prevalence and CDC/NVSS county cardiovascular death rates. Drag, hover and zoom everything.</p>
+
+<div class="bar">
+  <div class="grp"><span class="lbl">View</span>
+    <button data-v="map" class="on">Maps</button><button data-v="sc">Scatter</button><button data-v="3d">3D</button></div>
+  <div class="grp"><span class="lbl">Age</span>
+    <button data-a="a6" class="on">35–64</button><button data-a="a65">65+</button></div>
+  <div class="grp" id="yrgrp"><span class="lbl">Year</span>
+    <input id="slider" type="range" min="2011" max="2019" value="2019"><span id="yr">2019</span>
+    <button id="play">▶ Play</button></div>
+</div>
+
+<div class="stats">
+  <div class="stat"><b id="s-r">–</b><span id="s-rl">correlation across states</span></div>
+  <div class="stat"><b id="s-o">–</b><span>average adult obesity</span></div>
+  <div class="stat"><b id="s-c">–</b><span>average CVD deaths /100k</span></div>
+  <div class="stat"><b id="s-t">–</b><span>2011→2019 change in CVD rate</span></div>
+</div>
+
+<div id="v-map" class="maps"><div class="panel"><div id="m1" style="height:380px"></div></div><div class="panel"><div id="m2" style="height:380px"></div></div></div>
+<div id="v-sc" class="panel hide"><div id="sc" style="height:520px"></div></div>
+<div id="v-3d" class="panel hide"><div id="td" style="height:560px"></div></div>
+
+<p class="note" id="note"></p>
+<p class="note">Method: obesity = state average of the overall (all-adults) BRFSS estimate. CVD = unweighted mean of county age-standardized, spatially smoothed death rates for adults 35–64 or 65+. The two age groups run at very different levels, so they are never mixed. New Jersey has no 2019 obesity estimate, so it is left out of that year. Correlation is across states and is an association, not proof that obesity causes heart disease.</p>
+
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+<script>
+const D=[["AK",2011,122.8,1383.7,27.4],["AK",2012,121.5,1361.6,25.7],["AK",2013,120.7,1340.2,28.4],["AK",2014,120.0,1319.4,29.7],["AK",2015,119.0,1303.0,29.8],["AK",2016,118.3,1282.8,31.4],["AK",2017,117.4,1265.1,34.2],["AK",2018,116.8,1246.3,29.5],["AK",2019,116.2,1227.3,30.5],["AL",2011,221.1,1966.1,32.0],["AL",2012,223.2,1944.4,33.0],["AL",2013,225.2,1929.8,32.4],["AL",2014,226.9,1912.5,33.5],["AL",2015,229.5,1900.4,35.6],["AL",2016,231.5,1882.3,35.7],["AL",2017,233.6,1867.8,36.3],["AL",2018,235.8,1853.9,36.2],["AL",2019,238.0,1838.5,36.1],["AR",2011,197.4,1895.9,30.9],["AR",2012,200.2,1876.8,34.5],["AR",2013,203.0,1859.1,34.6],["AR",2014,206.2,1840.3,35.9],["AR",2015,209.3,1826.9,34.5],["AR",2016,212.4,1811.1,35.7],["AR",2017,215.8,1796.0,35.0],["AR",2018,218.9,1780.9,37.1],["AR",2019,222.6,1768.7,37.4],["AZ",2011,116.5,1332.4,25.1],["AZ",2012,117.5,1311.0,26.0],["AZ",2013,118.5,1292.4,26.8],["AZ",2014,119.4,1272.7,28.9],["AZ",2015,121.0,1265.6,28.4],["AZ",2016,122.1,1254.6,29.0],["AZ",2017,123.1,1245.1,29.5],["AZ",2018,124.4,1228.3,29.5],["AZ",2019,125.4,1209.0,31.4],["CA",2011,102.2,1484.1,23.8],["CA",2012,102.8,1458.7,25.0],["CA",2013,103.2,1439.8,24.1],["CA",2014,103.6,1405.0,24.7],["CA",2015,104.5,1397.6,24.2],["CA",2016,105.3,1377.1,25.0],["CA",2017,105.8,1365.0,25.1],["CA",2018,106.6,1339.9,25.8],["CA",2019,107.3,1320.3,26.2],["CO",2011,82.8,1230.7,20.7],["CO",2012,83.1,1217.0,20.5],["CO",2013,83.4,1204.2,21.3],["CO",2014,83.8,1194.0,21.3],["CO",2015,84.2,1181.4,20.2],["CO",2016,84.6,1169.5,22.3],["CO",2017,84.9,1156.6,22.6],["CO",2018,85.3,1147.7,23.0],["CO",2019,85.8,1137.2,23.8],["CT",2011,84.4,1408.8,24.5],["CT",2012,84.2,1384.7,25.6],["CT",2013,83.2,1372.4,25.0],["CT",2014,82.5,1351.3,26.3],["CT",2015,81.7,1345.4,25.3],["CT",2016,81.0,1314.9,26.0],["CT",2017,80.8,1301.6,26.9],["CT",2018,80.4,1287.1,27.4],["CT",2019,79.8,1275.8,29.1],["DC",2011,174.7,1635.3,23.7],["DC",2012,176.4,1639.5,21.9],["DC",2013,178.6,1615.8,22.9],["DC",2014,180.7,1589.7,21.7],["DC",2015,179.9,1537.6,22.1],["DC",2016,182.7,1554.3,22.6],["DC",2017,182.5,1484.1,23.0],["DC",2018,184.6,1462.6,24.7],["DC",2019,182.7,1433.8,23.8],["DE",2011,122.1,1523.5,28.8],["DE",2012,121.5,1509.4,26.9],["DE",2013,121.8,1489.0,31.1],["DE",2014,119.8,1493.3,30.7],["DE",2015,119.0,1483.8,29.7],["DE",2016,118.3,1472.5,30.7],["DE",2017,117.8,1465.3,31.8],["DE",2018,116.6,1464.6,33.5],["DE",2019,116.4,1448.8,34.4],["FL",2011,130.7,1461.9,26.6],["FL",2012,132.2,1444.2,25.2],["FL",2013,133.8,1426.8,26.4],["FL",2014,135.6,1418.0,26.2],["FL",2015,137.3,1407.2,26.8],["FL",2016,138.9,1389.1,27.4],["FL",2017,140.7,1379.8,28.4],["FL",2018,142.6,1364.3,30.7],["FL",2019,144.2,1350.5,27.0],["GA",2011,178.7,1728.2,28.0],["GA",2012,181.1,1707.9,29.1],["GA",2013,184.0,1688.2,30.3],["GA",2014,186.8,1671.1,30.5],["GA",2015,189.7,1654.8,30.7],["GA",2016,192.7,1637.3,31.4],["GA",2017,195.6,1619.3,31.6],["GA",2018,198.8,1603.7,32.5],["GA",2019,201.9,1587.8,33.1],["HI",2011,104.9,1199.4,21.8],["HI",2012,106.0,1190.8,23.6],["HI",2013,106.8,1178.3,21.8],["HI",2014,108.2,1160.7,22.1],["HI",2015,109.0,1155.9,22.7],["HI",2016,109.4,1131.1,23.8],["HI",2017,111.5,1118.5,23.8],["HI",2018,112.2,1109.6,24.9],["HI",2019,113.5,1098.2,25.0],["IA",2011,106.7,1541.2,29.0],["IA",2012,108.0,1535.0,30.4],["IA",2013,109.3,1526.8,31.3],["IA",2014,110.6,1519.5,30.9],["IA",2015,112.0,1513.5,32.1],["IA",2016,113.4,1506.6,32.0],["IA",2017,114.8,1501.3,36.4],["IA",2018,116.4,1496.2,35.3],["IA",2019,117.9,1490.2,33.9],["ID",2011,94.8,1479.5,27.0],["ID",2012,94.6,1469.0,26.8],["ID",2013,94.3,1458.5,29.6],["ID",2014,94.2,1450.2,28.9],["ID",2015,94.0,1442.3,28.6],["ID",2016,94.0,1435.2,27.4],["ID",2017,93.7,1428.0,29.3],["ID",2018,93.8,1420.1,28.4],["ID",2019,93.5,1411.0,29.5],["IL",2011,125.3,1620.7,27.1],["IL",2012,126.5,1603.8,28.1],["IL",2013,127.7,1591.0,29.4],["IL",2014,128.7,1577.5,29.3],["IL",2015,130.0,1567.9,30.8],["IL",2016,131.2,1551.5,31.6],["IL",2017,132.4,1541.8,31.1],["IL",2018,133.9,1527.2,31.8],["IL",2019,135.2,1516.4,31.6],["IN",2011,134.8,1697.8,30.8],["IN",2012,135.6,1679.8,31.4],["IN",2013,136.2,1660.7,31.8],["IN",2014,137.1,1641.4,32.7],["IN",2015,137.8,1623.4,31.3],["IN",2016,138.7,1604.9,32.5],["IN",2017,139.5,1590.1,33.6],["IN",2018,140.4,1573.0,34.1],["IN",2019,141.3,1557.0,35.3],["KS",2011,120.3,1549.5,29.6],["KS",2012,121.5,1542.9,29.8],["KS",2013,122.6,1537.0,30.0],["KS",2014,123.7,1530.1,31.3],["KS",2015,124.9,1526.5,34.2],["KS",2016,126.1,1519.8,31.2],["KS",2017,127.3,1516.3,32.4],["KS",2018,128.6,1509.2,34.4],["KS",2019,129.8,1504.8,35.2],["KY",2011,184.5,1867.8,30.4],["KY",2012,186.8,1841.2,31.3],["KY",2013,189.1,1814.9,33.2],["KY",2014,191.7,1789.0,31.6],["KY",2015,194.1,1764.7,34.6],["KY",2016,196.7,1742.1,34.2],["KY",2017,199.3,1718.2,34.3],["KY",2018,202.0,1698.4,36.6],["KY",2019,204.7,1676.7,36.5],["LA",2011,201.2,1899.2,33.4],["LA",2012,202.9,1880.1,34.7],["LA",2013,204.5,1862.1,33.1],["LA",2014,206.2,1845.1,34.9],["LA",2015,207.6,1828.3,36.2],["LA",2016,209.4,1812.7,35.5],["LA",2017,211.1,1797.6,36.2],["LA",2018,212.7,1783.5,36.8],["LA",2019,214.7,1764.7,35.9],["MA",2011,76.1,1348.1,22.7],["MA",2012,76.1,1318.3,22.9],["MA",2013,76.0,1307.5,23.6],["MA",2014,76.1,1282.3,23.3],["MA",2015,76.2,1272.8,24.3],["MA",2016,76.3,1246.3,23.6],["MA",2017,76.6,1226.4,25.9],["MA",2018,76.6,1209.5,25.7],["MA",2019,76.8,1187.2,25.2],["MD",2011,121.4,1618.3,28.3],["MD",2012,121.6,1614.4,27.6],["MD",2013,122.0,1607.1,28.3],["MD",2014,122.0,1598.4,29.6],["MD",2015,122.6,1594.3,28.9],["MD",2016,122.8,1587.8,29.9],["MD",2017,122.9,1586.1,31.3],["MD",2018,123.3,1577.6,30.9],["MD",2019,123.7,1574.9,32.3],["ME",2011,92.1,1419.6,27.8],["ME",2012,92.5,1410.3,28.3],["ME",2013,93.2,1405.0,28.9],["ME",2014,93.7,1394.2,28.2],["ME",2015,94.5,1391.6,30.0],["ME",2016,95.0,1381.7,29.9],["ME",2017,95.8,1373.7,29.1],["ME",2018,96.3,1366.9,30.4],["ME",2019,96.9,1356.3,31.7],["MI",2011,123.9,1687.4,31.3],["MI",2012,124.0,1678.0,31.1],["MI",2013,124.3,1673.7,31.5],["MI",2014,124.6,1667.0,30.7],["MI",2015,124.9,1660.4,31.2],["MI",2016,125.4,1652.7,32.5],["MI",2017,125.5,1647.7,32.3],["MI",2018,125.9,1642.3,33.0],["MI",2019,126.1,1638.8,36.0],["MN",2011,79.5,1284.3,25.7],["MN",2012,80.0,1276.5,25.7],["MN",2013,80.5,1270.9,25.5],["MN",2014,81.0,1262.2,27.6],["MN",2015,81.5,1257.1,26.1],["MN",2016,82.1,1250.0,27.8],["MN",2017,82.7,1244.5,28.4],["MN",2018,83.3,1238.5,30.1],["MN",2019,83.9,1233.9,30.1],["MO",2011,160.5,1789.2,30.3],["MO",2012,162.0,1767.8,29.6],["MO",2013,163.5,1748.6,30.4],["MO",2014,165.2,1729.9,30.2],["MO",2015,166.7,1712.0,32.4],["MO",2016,168.3,1693.7,31.7],["MO",2017,170.2,1677.7,32.5],["MO",2018,171.9,1658.6,35.0],["MO",2019,173.8,1641.4,34.8],["MS",2011,228.8,2038.7,34.9],["MS",2012,231.2,2011.9,34.6],["MS",2013,233.8,1988.4,35.1],["MS",2014,236.5,1962.9,35.5],["MS",2015,239.2,1944.3,35.6],["MS",2016,241.9,1920.9,37.3],["MS",2017,244.7,1899.8,37.3],["MS",2018,247.4,1878.2,39.5],["MS",2019,250.4,1857.3,40.8],["MT",2011,104.4,1436.4,24.6],["MT",2012,105.6,1427.4,24.3],["MT",2013,106.8,1421.4,24.6],["MT",2014,108.0,1412.4,26.4],["MT",2015,109.2,1406.2,23.6],["MT",2016,110.5,1399.8,25.5],["MT",2017,111.8,1393.6,25.3],["MT",2018,113.4,1387.1,26.9],["MT",2019,114.8,1379.2,28.3],["NC",2011,142.3,1571.2,29.1],["NC",2012,142.7,1551.6,29.6],["NC",2013,143.1,1531.7,29.4],["NC",2014,143.3,1511.7,29.7],["NC",2015,143.8,1496.2,30.1],["NC",2016,144.2,1475.0,31.8],["NC",2017,144.6,1458.6,32.1],["NC",2018,145.2,1440.4,33.0],["NC",2019,145.5,1425.4,34.0],["ND",2011,109.7,1446.1,27.8],["ND",2012,110.8,1430.0,29.7],["ND",2013,112.1,1415.0,31.0],["ND",2014,113.3,1396.6,32.2],["ND",2015,114.5,1382.4,31.0],["ND",2016,115.8,1365.7,31.9],["ND",2017,116.9,1352.4,33.2],["ND",2018,118.4,1337.3,35.1],["ND",2019,119.7,1324.5,34.8],["NE",2011,95.9,1450.9,28.4],["NE",2012,96.5,1439.2,28.6],["NE",2013,97.3,1429.9,29.6],["NE",2014,98.1,1417.2,30.2],["NE",2015,99.0,1408.0,31.4],["NE",2016,99.7,1395.4,32.0],["NE",2017,100.6,1388.0,32.8],["NE",2018,101.5,1377.4,34.1],["NE",2019,102.3,1366.8,34.1],["NH",2011,81.7,1382.8,26.2],["NH",2012,83.1,1367.6,27.3],["NH",2013,84.5,1355.7,26.7],["NH",2014,85.7,1351.6,27.4],["NH",2015,87.0,1344.3,26.3],["NH",2016,88.7,1333.9,26.6],["NH",2017,90.1,1328.8,28.1],["NH",2018,91.6,1321.2,29.6],["NH",2019,93.2,1307.1,31.8],["NJ",2011,98.7,1583.4,23.7],["NJ",2012,98.8,1565.9,24.6],["NJ",2013,98.8,1546.0,26.3],["NJ",2014,98.8,1520.0,26.9],["NJ",2015,98.8,1510.1,25.6],["NJ",2016,98.9,1489.5,27.4],["NJ",2017,99.4,1470.8,27.3],["NJ",2018,99.4,1460.1,25.7],["NM",2011,110.4,1383.0,26.3],["NM",2012,111.9,1372.2,27.1],["NM",2013,114.1,1364.1,26.4],["NM",2014,115.9,1354.5,28.4],["NM",2015,117.8,1345.3,28.8],["NM",2016,119.7,1338.7,28.3],["NM",2017,121.6,1332.3,28.4],["NM",2018,123.7,1324.5,32.3],["NM",2019,125.7,1319.4,31.7],["NV",2011,133.7,1698.8,24.5],["NV",2012,133.6,1685.3,26.2],["NV",2013,133.8,1671.7,26.2],["NV",2014,133.8,1664.2,27.7],["NV",2015,133.9,1661.6,26.7],["NV",2016,134.0,1656.3,25.8],["NV",2017,133.7,1653.5,26.7],["NV",2018,133.7,1645.7,29.5],["NV",2019,133.9,1642.7,30.6],["NY",2011,103.3,1682.2,24.5],["NY",2012,103.4,1645.9,23.6],["NY",2013,103.6,1616.7,25.4],["NY",2014,103.9,1580.3,27.0],["NY",2015,104.1,1556.8,25.0],["NY",2016,104.5,1524.4,25.5],["NY",2017,104.7,1494.3,25.7],["NY",2018,105.0,1468.3,27.6],["NY",2019,105.3,1437.8,27.1],["OH",2011,129.2,1724.7,29.6],["OH",2012,130.7,1713.3,30.1],["OH",2013,132.0,1704.2,30.4],["OH",2014,133.4,1693.3,32.6],["OH",2015,134.8,1687.4,29.8],["OH",2016,136.4,1674.5,31.5],["OH",2017,137.8,1667.9,33.8],["OH",2018,139.4,1664.7,34.0],["OH",2019,140.9,1653.7,34.8],["OK",2011,190.6,1952.1,31.1],["OK",2012,193.0,1937.1,32.2],["OK",2013,195.7,1927.0,32.5],["OK",2014,198.2,1914.8,33.0],["OK",2015,201.1,1903.5,33.9],["OK",2016,203.7,1892.8,32.8],["OK",2017,206.7,1884.2,36.5],["OK",2018,209.3,1872.8,34.8],["OK",2019,212.4,1862.9,36.8],["OR",2011,87.7,1404.0,26.7],["OR",2012,88.0,1393.0,27.3],["OR",2013,88.4,1388.5,26.5],["OR",2014,88.8,1381.9,27.9],["OR",2015,89.2,1378.7,30.1],["OR",2016,89.7,1373.3,28.7],["OR",2017,90.1,1369.8,29.4],["OR",2018,90.6,1359.6,29.9],["OR",2019,91.0,1357.9,29.0],["PA",2011,110.1,1650.4,28.6],["PA",2012,110.3,1622.4,29.1],["PA",2013,110.9,1604.7,30.0],["PA",2014,111.3,1581.5,30.2],["PA",2015,111.9,1569.0,30.0],["PA",2016,112.5,1548.5,30.3],["PA",2017,112.9,1530.7,31.6],["PA",2018,113.6,1515.6,30.9],["PA",2019,114.1,1494.4,33.2],["RI",2011,78.3,1393.5,25.4],["RI",2012,77.7,1375.6,25.7],["RI",2013,77.5,1354.8,27.3],["RI",2014,77.1,1339.0,27.0],["RI",2015,77.0,1332.0,26.0],["RI",2016,76.5,1309.5,26.6],["RI",2017,76.4,1310.8,30.0],["RI",2018,76.4,1297.0,27.7],["RI",2019,75.8,1293.1,30.0],["SC",2011,195.9,1666.1,30.8],["SC",2012,196.2,1644.2,31.6],["SC",2013,196.7,1623.5,31.7],["SC",2014,197.2,1605.1,32.1],["SC",2015,197.9,1584.5,31.7],["SC",2016,198.2,1563.3,32.3],["SC",2017,198.8,1544.7,34.1],["SC",2018,199.3,1526.7,34.3],["SC",2019,199.8,1507.3,35.4],["SD",2011,106.5,1472.8,28.1],["SD",2012,107.7,1460.6,28.1],["SD",2013,108.9,1449.9,29.9],["SD",2014,110.1,1441.2,29.8],["SD",2015,111.3,1432.7,30.4],["SD",2016,112.7,1421.2,29.6],["SD",2017,114.0,1414.2,31.9],["SD",2018,115.3,1405.5,30.1],["SD",2019,116.6,1397.2,33.0],["TN",2011,192.1,1858.2,29.2],["TN",2012,193.7,1839.4,31.1],["TN",2013,195.6,1822.5,33.7],["TN",2014,197.6,1804.8,31.2],["TN",2015,199.5,1790.5,33.8],["TN",2016,201.3,1773.4,34.8],["TN",2017,203.5,1758.7,32.8],["TN",2018,205.5,1744.9,34.4],["TN",2019,207.7,1729.7,36.5],["TX",2011,148.7,1655.0,30.4],["TX",2012,150.1,1642.9,29.2],["TX",2013,151.8,1631.2,30.9],["TX",2014,153.4,1621.3,31.9],["TX",2015,155.2,1613.3,32.4],["TX",2016,156.8,1602.3,33.7],["TX",2017,158.6,1593.1,33.0],["TX",2018,160.4,1584.7,34.8],["TX",2019,162.2,1572.7,34.0],["UT",2011,82.1,1480.6,24.4],["UT",2012,82.1,1469.3,24.3],["UT",2013,82.3,1463.0,24.1],["UT",2014,82.2,1452.7,25.7],["UT",2015,82.3,1444.5,24.5],["UT",2016,82.2,1434.8,25.4],["UT",2017,82.4,1424.7,25.3],["UT",2018,82.3,1413.2,27.8],["UT",2019,82.4,1404.9,29.2],["VA",2011,135.3,1602.2,29.2],["VA",2012,136.6,1584.0,27.4],["VA",2013,138.1,1567.3,27.2],["VA",2014,139.7,1550.4,28.5],["VA",2015,141.2,1535.8,29.2],["VA",2016,142.8,1520.3,29.0],["VA",2017,144.5,1507.8,30.1],["VA",2018,146.1,1492.2,30.4],["VA",2019,147.7,1480.8,31.9],["VT",2011,81.2,1437.0,25.4],["VT",2012,82.6,1436.0,23.7],["VT",2013,84.3,1429.4,24.7],["VT",2014,86.0,1428.3,24.8],["VT",2015,87.6,1424.8,25.1],["VT",2016,89.4,1422.0,27.1],["VT",2017,91.2,1418.6,27.6],["VT",2018,93.0,1416.0,27.5],["VT",2019,95.0,1412.8,26.6],["WA",2011,90.7,1403.9,26.5],["WA",2012,91.3,1385.4,26.8],["WA",2013,92.0,1369.6,27.2],["WA",2014,92.6,1353.9,27.3],["WA",2015,93.0,1341.0,26.4],["WA",2016,93.8,1325.0,28.6],["WA",2017,94.6,1315.8,27.7],["WA",2018,95.2,1300.1,28.7],["WA",2019,95.9,1286.8,28.3],["WI",2011,92.6,1500.4,27.7],["WI",2012,92.8,1486.6,29.7],["WI",2013,93.0,1475.4,29.8],["WI",2014,93.2,1461.8,31.2],["WI",2015,93.4,1453.7,30.7],["WI",2016,93.7,1440.3,30.7],["WI",2017,93.9,1432.3,32.0],["WI",2018,94.3,1421.6,32.0],["WI",2019,94.6,1411.2,34.2],["WV",2011,143.1,1782.5,32.4],["WV",2012,144.7,1755.6,33.8],["WV",2013,146.3,1726.1,35.1],["WV",2014,148.1,1701.0,35.7],["WV",2015,149.7,1678.9,35.6],["WV",2016,151.5,1653.7,37.7],["WV",2017,153.2,1630.1,38.1],["WV",2018,155.2,1605.9,39.5],["WV",2019,157.0,1585.1,39.7],["WY",2011,101.9,1395.9,25.0],["WY",2012,102.4,1384.9,24.6],["WY",2013,103.2,1369.5,27.8],["WY",2014,104.1,1358.3,29.5],["WY",2015,104.7,1347.0,29.0],["WY",2016,105.4,1336.9,27.7],["WY",2017,106.3,1324.2,28.8],["WY",2018,107.2,1314.9,29.0],["WY",2019,108.1,1303.5,29.7]]; // [state,year,cvd35_64,cvd65,obesity]
+let view='map',age=6,year=2019,timer=null;
+const idx=()=>age==6?2:3;
+const dark=()=>matchMedia('(prefers-color-scheme:dark)').matches;
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const base=()=>({paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:css('--text'),family:'Source Sans 3'},margin:{l:50,r:20,t:40,b:50}});
+const rows=y=>D.filter(r=>r[1]==y);
+function corr(a,b){const n=a.length,ma=a.reduce((x,y)=>x+y)/n,mb=b.reduce((x,y)=>x+y)/n;let s=0,sa=0,sb=0;for(let i=0;i<n;i++){s+=(a[i]-ma)*(b[i]-mb);sa+=(a[i]-ma)**2;sb+=(b[i]-mb)**2}return s/Math.sqrt(sa*sb)}
+const mean=a=>a.reduce((x,y)=>x+y)/a.length;
+const cvdName=()=>'CVD deaths /100k, ages '+(age==6?'35–64':'65+');
+const rng=(k)=>[Math.min(...D.map(r=>r[k])),Math.max(...D.map(r=>r[k]))];
+
+function stats(){
+  const r=rows(year),c=r.map(x=>x[idx()]),o=r.map(x=>x[4]);
+  document.getElementById('s-r').textContent='r = '+corr(o,c).toFixed(2);
+  document.getElementById('s-o').textContent=mean(o).toFixed(1)+'%';
+  document.getElementById('s-c').textContent=mean(c).toFixed(0);
+  const c11=mean(rows(2011).map(x=>x[idx()])),c19=mean(rows(2019).map(x=>x[idx()]));
+  document.getElementById('s-t').textContent=((c19/c11-1)*100).toFixed(1).replace(/^(\d)/,'+$1')+'%';
+  document.getElementById('note').textContent=age==6
+   ?'Ages 35–64: death rates and obesity both rose over the decade, and states with more obesity had higher death rates in every year.'
+   :'Ages 65+: states with more obesity still had higher death rates in every year, but the 65+ death rate fell over the decade while obesity rose. Obesity alone does not explain the trend.';
+}
+function maps(){
+  const r=rows(year),cfg={displayModeBar:false,responsive:true};
+  const geo={scope:'usa',bgcolor:'rgba(0,0,0,0)',lakecolor:'rgba(0,0,0,0)'};
+  const mk=(div,k,title,cs)=>{const [lo,hi]=rng(k);Plotly.react(div,[{type:'choropleth',locationmode:'USA-states',locations:r.map(x=>x[0]),z:r.map(x=>x[k]),zmin:lo,zmax:hi,colorscale:cs,reversescale:true,marker:{line:{color:css('--bg'),width:.6}},colorbar:{thickness:10,len:.8,tickfont:{size:10}},hovertemplate:'%{location}: %{z}<extra></extra>'}],{...base(),title:{text:title,font:{size:14}},geo,margin:{l:0,r:0,t:40,b:0}},cfg)};
+  mk('m1',4,'Adult obesity (%)','YlOrRd');mk('m2',idx(),cvdName(),'Blues');
+}
+function scatter(){
+  const r=rows(year),x=r.map(a=>a[4]),y=r.map(a=>a[idx()]),n=x.length,mx=mean(x),my=mean(y);
+  let sxy=0,sxx=0;for(let i=0;i<n;i++){sxy+=(x[i]-mx)*(y[i]-my);sxx+=(x[i]-mx)**2}
+  const b=sxy/sxx,a0=my-b*mx,xs=[Math.min(...D.map(d=>d[4])),Math.max(...D.map(d=>d[4]))];
+  const [lo,hi]=rng(idx());
+  Plotly.react('sc',[
+   {type:'scatter',mode:'markers+text',x,y,text:r.map(a=>a[0]),textposition:'top center',textfont:{size:9},marker:{size:9,color:'#EB5E28',opacity:.85},hovertemplate:'%{text}<br>obesity %{x}%<br>%{y} per 100k<extra></extra>',showlegend:false},
+   {type:'scatter',mode:'lines',x:xs,y:xs.map(v=>a0+b*v),line:{color:css('--mute'),dash:'dot'},hoverinfo:'skip',showlegend:false}],
+   {...base(),title:{text:'Each dot is a state, '+year+' (r = '+corr(x,y).toFixed(2)+')',font:{size:14}},xaxis:{title:'Adult obesity (%)',range:[xs[0]-1,xs[1]+1],gridcolor:css('--line')},yaxis:{title:cvdName(),range:[lo-(hi-lo)*.05,hi+(hi-lo)*.05],gridcolor:css('--line')}},{displayModeBar:false,responsive:true});
+}
+function three(){
+  Plotly.react('td',[{type:'scatter3d',mode:'markers',x:D.map(r=>r[1]),y:D.map(r=>r[idx()]),z:D.map(r=>r[4]),text:D.map(r=>r[0]),marker:{size:3,color:D.map(r=>r[4]),colorscale:'YlOrRd',opacity:.85,colorbar:{title:'Obesity %',thickness:10}},hovertemplate:'%{text} %{x}<br>%{y} per 100k<br>obesity %{z}%<extra></extra>'}],
+   {...base(),margin:{l:0,r:0,t:30,b:0},title:{text:'All state-years: year × '+cvdName()+' × obesity',font:{size:14}},scene:{xaxis:{title:'Year',dtick:2},yaxis:{title:'Deaths /100k'},zaxis:{title:'Obesity %'}}},{displayModeBar:false,responsive:true});
+}
+function render(){
+  stats();
+  ['map','sc','3d'].forEach(v=>document.getElementById('v-'+v).classList.toggle('hide',v!=view));
+  document.getElementById('yrgrp').style.visibility=view=='3d'?'hidden':'visible';
+  if(view=='map')maps();else if(view=='sc')scatter();else three();
+}
+document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{view=b.dataset.v;document.querySelectorAll('[data-v]').forEach(x=>x.classList.toggle('on',x==b));render()});
+document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{age=b.dataset.a=='a6'?6:65;document.querySelectorAll('[data-a]').forEach(x=>x.classList.toggle('on',x==b));render()});
+const sl=document.getElementById('slider');
+sl.oninput=()=>{year=+sl.value;document.getElementById('yr').textContent=year;render()};
+document.getElementById('play').onclick=function(){
+  if(timer){clearInterval(timer);timer=null;this.textContent='▶ Play';return}
+  this.textContent='❚❚ Pause';year=2010;
+  timer=setInterval(()=>{year++;if(year>2019){clearInterval(timer);timer=null;document.getElementById('play').textContent='▶ Play';year=2019}sl.value=year;document.getElementById('yr').textContent=year;render()},700);
+};
+matchMedia('(prefers-color-scheme:dark)').addEventListener('change',render);
+const h0=location.hash.slice(1);if(['map','sc','3d'].includes(h0)){view=h0;document.querySelectorAll('[data-v]').forEach(x=>x.classList.toggle('on',x.dataset.v==h0))}
+render();
+</script>
+</body>
+</html>

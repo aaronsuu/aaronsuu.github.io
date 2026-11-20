@@ -1,0 +1,291 @@
+---
+title: "INFO 201: Final Project - Lifestyle v.s. Leading Death Rates"
+author: "Aaron Su"
+date: today
+format: 
+  html:
+    echo: true
+    embed-resources: true
+---
+
+# Loading the Dataframes
+
+```{r}
+library(tidyverse)
+library(usmap)
+library(gganimate)
+library(scales)
+library(plotly)
+```
+
+### Reading the Data, make sure it is in the working directory.
+
+```{r}
+df2 <- read.csv ("Nutrition__Physical_Activity__and_Obesity_-_Behavioral_Risk_Factor_Surveillance_System.csv")
+df3 <- read.csv("Cardiovascular_Disease_Death_Rates__Trends__and_Excess_Death_Rates_Among_US_Adults__35___by_County_and_Age_Group___2010-2020.csv")
+```
+
+Our dataframes 
+
+Link to Data Set 1: https://data.cdc.gov/Nutrition-Physical-Activity-and-Obesity/Nutrition-Physical-Activity-and-Obesity-Behavioral/hn4x-zwk7/about_data  
+
+This data set is about adult's diet, physical activity, and weight status from the Behavioral Risk Factor Surveillance System. 
+
+Link to Data Set 2: https://catalog.data.gov/dataset/cardiovascular-disease-death-rates-trends-and-excess-death-rates-among-us-adults-35-b-2010  
+
+This data set documents cardiovascular disease death rates in 2000-2020.  
+
+Outside Source 1: https://www.cdc.gov/media/releases/2024/p0912-adult-obesity.html
+
+This source sparked the question of the increased obesity in the US. As Americans eat more processed foods and exercise less, these are major contributing factors to obesity.
+
+Outside Source 2: https://www.cdc.gov/nchs/fastats/leading-causes-of-death.html
+
+The CDC explained the leading causes of death in the United States in the last few years is heart disease. With the rise of obesity, is there a correlation between two of them?
+
+
+# Narrative:  Understanding the Link Between Obesity and Cardiovascular Disease in the US  
+
+Obesity and cardiovascular disease (CVD) are two of the most pressing public health challenges across the United States. Over the past few decades, obesity has been on the rise across all regions of the US, which also contributes to a concerning rise in cardiovascular related deaths. With recent health data, we can see a strong correlation between obesity and cardiovascular mortality, emphasizing the urgent need to address these health risks.  
+
+Obesity Rates Across the US  
+
+First, we wanted to look at the obesity rates across the US, and potential contributing factors. Obesity rates vary significantly by state, which can be influenced by factors such as income levels. Understanding these disparities is crucial, as targeting states with the highest rates can help focus intervention efforts where they are needed most. There has been prior research in this area, done by the CDC’s National Health and Nutrition Examination Survey, which has tracked the growing obesity epidemic and its long-term implications.  
+
+ 
+
+Cardiovascular Disease Trends  
+
+Cardiovascular disease remains the leading cause of death in the US, with regional disparities reflecting broader health inequalities. From 2018 to 2020, states in the southern and southeastern regions – such as Mississippi, Alabama, and Arkansas, reported the highest cardiovascular disease rates. This trend may be linked to higher poverty levels and limited healthcare access. Reports from the American Heart Association have consistently highlighted these trends since the early 2000s, reinforcing the need for targeted health policies and interventions in this area.  
+
+
+#Obesity Rates
+
+```{r}
+df2_filtered <- df2 |>
+  filter(Question == "Percent of adults aged 18 years and older who have obesity") |>
+  select(YearStart, LocationAbbr, LocationDesc, Class, Topic, Question, Data_Value)
+```
+
+
+Next, we calculate the average obesity rate per state per year to identify trends over time.
+
+```{r}
+df2_avg <- df2_filtered |>
+  group_by(YearStart, LocationAbbr, LocationDesc, Class, Topic, Question) |>
+  summarise(mean = mean(Data_Value, na.rm = TRUE))
+```
+
+
+## So has Obesity in the Untied States risen in the last few years?
+
+Prepping the Data
+```{r}
+df2_line <- df2_avg %>%
+  group_by(YearStart) %>%
+  summarize(
+    mean_value = mean(mean, na.rm = TRUE),
+  )
+```
+
+
+```{r}
+
+#| echo: false
+#| fig.alt: "A line shart where it shows a rapid increase of an average ~6% of the popluation having obesity within the last 10 years in all in the United States"
+#| 
+df2_line |>
+  ggplot(aes(x = YearStart, y = mean_value)) +
+    geom_line(color = "blue") +
+    labs(
+    title = "Average % of Obesity by Year in the United States",
+    x = "Year",
+    y = "Mean %"
+    ) +
+    theme_minimal()
+
+
+```
+The graph clearly shows a increase of ~6% of the population having obesity in the last 10 years. Let's try to visualize it with a map of the data.
+
+
+To visualize the data on a map, we rename the LocationDesc column to state for compatibility with the usmap package.
+```{r}
+df2_map2019 <- df2_avg |>
+  rename(state = LocationDesc) |>
+  filter(YearStart == 2019)
+
+```
+
+
+### The following maps displays the average obesity rates by state, with darker shades of red indicating higher rates. This visualization helps us identify regions with higher obesity prevalence, which may correlate with leading causes of death.
+
+### Obesity Rate by Percentage in 2011
+
+```{r}
+#| echo: false
+#| fig.alt: "A heat map of the United States showing the average obesity rate by state in 2011. States with higher obesity rates are shaded in darker red, while states with lower rates are shaded in grey. The map includes a legend indicating the percentage range of obesity rates. With states in the South experiencing the highest rates of obesity"
+df2_map2011 <- df2_avg |>
+  rename(state = LocationDesc) |>
+  filter(YearStart == 2011)
+
+plot_usmap(data = df2_map2011, values = "mean", color = "black") + 
+  scale_fill_continuous(
+    low = "grey", high = "red", name = "Obesity Rate by %", label = scales::comma
+  ) + theme(legend.position = "right")
+
+```
+
+### Obesity Rate by Percentage in 2019
+
+```{r}
+#| echo: false
+#| fig.alt: "A heat map of the United States showing the average obesity rate by state in 2011. States with higher obesity rates are shaded in darker red, while states with lower rates are shaded in grey. The map includes a legend indicating the percentage range of obesity rates. With a pretty even distribution of ~25% nationwide and being more prevalent in the US South."
+plot_usmap(data = df2_map2019, values = "mean", color = "black") + 
+  scale_fill_continuous(
+    low = "grey", high = "blue", name = "Obesity Rate by %", label = scales::comma
+  ) +  
+  
+  
+  ggtitle("Average Obesity Rate by State in 2019") + theme(legend.position = "right")
+
+
+
+```
+
+
+
+We see that there is a vast increase in the obesity rate over the century regardless of population. With the US South area still having one of the highest rates country-wide. 
+
+
+
+
+# Cardiovasular Rates
+
+
+
+```{r}
+#convert 'year' to numeric if needed (removes non-numeric values)
+cvd_data <- df3
+cvd_data$Year <- as.numeric (as.character (cvd_data$Year))
+```
+
+```{r}
+#filter for recent years (2018-2020)
+cvd_recent <- cvd_data |> 
+  filter (Year >= 2018 & Year <= 2020)
+```
+
+```{r}
+#group by state (using 'LocationAbbr') and calculate the average death rate 
+state_avg <- cvd_recent |>
+  group_by (LocationAbbr) |>
+  summarize (avg_death_rate = mean(Data_Value, na.rm = TRUE)) |> 
+  arrange (desc(avg_death_rate))
+```
+
+```{r}
+#extract top 10 states with the highest average death rate 
+top_10 <- state_avg |> slice_max (avg_death_rate, n = 10)
+```
+
+
+```{r}
+#| echo: false
+#| fig.alt: "In a bar graph, Mississippi, Alabama, and Arkansas have the highest cardiovascular disease rates with around 750 deaths per 100 thousand people"
+
+ggplot (top_10, aes(x=reorder (LocationAbbr, avg_death_rate), y = avg_death_rate)) +
+  geom_bar (stat = "identity", fill = "steelblue", width = 0.6) + 
+  labs (title = "Top 10 States by Cardiovascular Disease Death Rate (2018-2020)", 
+        x = "State", 
+        y = "Average Death Rate (per 100,000)") + 
+  coord_flip () + 
+  theme_minimal ()
+```
+
+# Bringing it All Together: The Relationship Between Obesity and Cardiovascular Disease Rates  
+
+By analyzing the overall trajectory of both obesity and cardiovascular mortality rates, we can observe a clear upward trend across the country. States with the highest obesity rates also tend to have higher cardiovascular disease mortality, emphasizing the direct impact of obesity on heart health. As these trends continue, tracking national and state-level data will be critical in evaluating public health efforts, identifying at-risk populations, and implementing effective interventions. 
+
+This project aims to provide a comprehensive view of the obesity CVD relationship, utilizing updated data to see how this relationship has changed over time. By understanding where the risks are highest and how they have evolved over time, we can work towards reducing preventable deaths and improving overall health outcomes in the US.  
+
+## Tidying the Dataframes
+
+### Cleaning up the dataframe for df2
+
+```{r}
+df2_filtered <- df2 |>
+  filter(Question == "Percent of adults aged 18 years and older who have obesity") |>
+  select(YearStart, LocationAbbr, LocationDesc, Class, Topic, Question, Data_Value)
+```
+
+### Filtering and Finding the Mean for Obesity Rate Per State Per Year.
+
+```{r}
+df2_avg <- df2_filtered |>
+  group_by(YearStart, LocationAbbr, LocationDesc, Class, Topic, Question) |>
+  summarise(mean = mean(Data_Value, na.rm = TRUE))
+
+```
+
+### Renaming certain Column names in conjunction with the df3 in preparation for plotting
+
+```{r}
+df2_premap <- df2_avg |>
+  rename(state = LocationDesc)
+
+```
+
+### Some errors along the lines of certain data frames and as such, tidying it out. In addition, simplifying the data frames for merging later. Also taking account common years in between both data frames.
+
+```{r}
+df3_filtered <- df3 |>
+  select(Year, LocationAbbr, Class, Data_Value) |>
+  group_by(LocationAbbr, Year) |>
+  summarize(mean_data = mean(Data_Value, na.rm = TRUE), .groups = "drop") |>
+  rename(
+    CardioData = mean_data
+  ) |>
+  filter(!str_detect(Year,"2010-2019")) |>
+  filter(Year >= 2011 & Year <= 2020)
+```
+
+```{r}
+df2_premap <- df2_premap |>
+  rename(ObseityMean = mean, Year = YearStart) |>
+  filter(Year >= 2011 & Year <= 2019) 
+
+```
+
+### Making sure the Year column on df3 is stored as a integer. As if it where \<chr\> the merging of dataframes would be impossible.
+
+### Important step for merging the dataframes together in the next step.
+
+```{r}
+df3_filtered$Year <- as.integer(df3_filtered$Year)
+```
+
+# Merging the Dataframes, preperation for plotting
+
+```{r}
+df <- full_join(df3_filtered, df2_premap, by = c("LocationAbbr", "Year")) |>
+  select(LocationAbbr, Year, CardioData, ObseityMean)
+```
+
+# Plotting the 3D plot
+
+```{r}
+
+#| echo: false
+#| fig.alt: "A strong correlation between obesity and mortality in all 50 states, while obesity and death rates are trending upwards"
+
+
+
+plot_ly(df, x = ~Year, y = ~CardioData, z = ~ObseityMean, color = ~LocationAbbr, type = 'scatter3d', mode = 'markers', maker = list(size=0.5)) |>
+  layout(title = "3D Plot of Obesity Percentage and Cardiovascular Mortality Rates per 100k per State",
+         scene = list(
+           xaxis = list(title = 'Year'),
+           yaxis = list(title = 'Cardiovasular Deaths Per 100k'),
+           zaxis = list(title = 'Percent of adults aged 18 years and older who have obesity')
+         ))
+```
