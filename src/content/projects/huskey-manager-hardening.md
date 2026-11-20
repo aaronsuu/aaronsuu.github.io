@@ -66,3 +66,5 @@ A fix I can't demonstrate is a guess. The test suite (**pytest + Selenium + requ
 Some tests check the opposite as well: a user can still open, and download from, their *own* vault, so a fix that simply blocks everything would fail.
 
 ![All 27 regression tests passing](/projects/huskey/pytest-passing.png)
+
+**Stack:** PHP, MySQL, nginx, PHP-FPM, Docker, Python, pytest, Selenium, requests, bcrypt, Monolog/Loggly, Metasploit, OWASP ZAP, Wireshark, Chrome DevTools

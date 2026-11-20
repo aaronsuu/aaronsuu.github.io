@@ -16,3 +16,5 @@ The sensor board holds a row of infrared photodetectors. Each one shines light d
 That position reading feeds into a PID controller running on the microcontroller. PID stands for Proportional, Integral, Derivative. In simple terms, it measures how far off-center the line is, how long it has been drifting, and how fast it is moving away, then combines those three numbers into a single steering correction. Too much correction and the car zigzags. Too little and it drives off the line. Tuning those three values by hand until the car tracked smoothly was the core challenge.
 
 The PCBs were designed in KiCAD, including schematic capture, component placement, and trace routing. After fabrication the boards were hand-soldered and tested before being integrated into the chassis.
+
+**Stack:** KiCAD, custom PCBs, infrared photodetector array, op-amps, microcontroller (C++), PID control

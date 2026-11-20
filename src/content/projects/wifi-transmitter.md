@@ -27,4 +27,4 @@ The transmitter passes a message through four stages before it becomes a signal.
 
 **SNR robustness.** To push the receiver as far as possible, `noisecomparison.py` sweeps SNR from 30 dB down to negative values, running 8 trials per SNR point across two long test messages (the course description and the US Constitution). Soft Viterbi consistently outperforms hard-decision decoding at low SNR, which is the whole reason it was worth implementing from scratch.
 
-**Stack:** Python, NumPy, [CommPy](https://commpy.readthedocs.io/)
+**Stack:** Python, NumPy, [CommPy](https://commpy.readthedocs.io/), Matplotlib

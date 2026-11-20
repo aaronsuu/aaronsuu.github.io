@@ -28,3 +28,5 @@ Custom aluminum **mechanism parts** for the robot, and the **workholding fixture
 - **~$400 saved:** having an outside shop make the equivalent in steel would have cost about $400 at the time. Making it in-house cost less and avoided waiting on a vendor.
 - **15 students trained:** I taught younger team members to set up and run the CNC machine safely, from tool selection to reading technical drawings.
 - **3rd place at the 2022 regional,** against teams from the US, Canada, Brazil, Taiwan, China, and Australia.
+
+**Stack:** Autodesk Fusion 360 (CAD and CAM), G-code, CNC mill, custom aluminum workholding fixtures
