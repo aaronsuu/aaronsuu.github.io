@@ -2,8 +2,8 @@
 title: "Topic Modeling Student Feedback: LDA vs LSA vs NMF"
 description: "Three classical topic models applied to 1,630 open-ended student responses about TA support. The number of topics is chosen with UMass coherence, singular-value spectra, and NMF reconstruction error, and a top-two probability margin separates confident topic assignments from ambiguous ones."
 coverHtml: /projects/ta-feedback-lda-lsa-nmf/cover.html
-keywords: [Python, LDA, LSA, NMF, Topic Modeling, scikit-learn, Gensim, NLP]
-minorTags: ["EE 400", "Natural Language Processing", "UMass Coherence", "Perplexity", "SVD", "Singular Values", "Reconstruction Error", "TF-IDF", "Document-Term Matrix", "Assignment Margin", "Word Clouds", "Model Comparison", "Human-in-the-Loop", "Matplotlib"]
+keywords: [Python, LDA, LSA, NMF, Topic Modeling, scikit-learn, Gensim, NLP, spaCy, pandas, Matplotlib]
+minorTags: [EE 400, Natural Language Processing, UMass Coherence, Perplexity, SVD, Singular Values, Reconstruction Error, TF-IDF, Document-Term Matrix, Assignment Margin, Word Clouds, Model Comparison, Human-in-the-Loop]
 order: 5
 lastUpdated: 2026-11-09
 previews:

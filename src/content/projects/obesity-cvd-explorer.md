@@ -1,8 +1,8 @@
 ---
 title: Obesity and Heart Disease Across US States
 description: "INFO 201 final project, redone as an interactive explorer. Joins CDC obesity survey data with county cardiovascular death rates for 51 states and DC (2011–2019). States with higher obesity have higher heart-disease death rates (r between 0.61 and 0.77 in every year), but the trend over time tells a more complicated story."
-keywords: [R, tidyverse, ggplot2, Plotly, Quarto, Python, pandas, Data Visualization]
-minorTags: ["Choropleth Maps", "Correlation Analysis", "CDC BRFSS", "INFO 201", "Public Health Data"]
+keywords: [R, tidyverse, ggplot2, Plotly, Quarto, Python, pandas, Data Visualization, dplyr]
+minorTags: [Choropleth Maps, Correlation Analysis, CDC BRFSS, INFO 201, Public Health Data]
 coverHtml: /projects/obesity-cvd/cover.html
 order: 10
 lastUpdated: 2026-11-19

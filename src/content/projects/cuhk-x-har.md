@@ -2,8 +2,8 @@
 title: Multimodal Human Activity Recognition (CUHK-X)
 description: "Five-sensor PyTorch transformer that recognises 40 daily activities from 3D skeleton, wearable IMU, infrared, thermal and depth video, under a 100 MB model budget. Built at HKUST MINSys Lab for the CUHK-X Small Model Track. A 3-fold cross-subject ensemble scored 0.55 on the Kaggle leaderboard, up from 0.40."
 coverHtml: /projects/cuhk-x-har/cover.html
-keywords: [PyTorch, Python, Deep Learning, Transformers, Multimodal Sensor Fusion, Human Activity Recognition, Time-Series Classification, Computer Vision, Transfer Learning, Cross-Validation, Feature Engineering, NumPy, pandas, Matplotlib, Edge AI]
-minorTags: ["HKUST MINSys Lab", "Research", Kaggle, "CUHK-X", IMU, "3D Skeleton", "Thermal Imaging", "Infrared", "Depth Video", "MobileNetV3", "R3D-18", "Frozen Backbones", "Auxiliary Loss", "Late Fusion", "Ensembling", "Label Smoothing", "AdamW", "Cosine Annealing", "Apple MPS", "Jupyter", "Subject-Grouped Splits", "Data Leakage", "Ablation Studies", "Model Recovery"]
+keywords: [PyTorch, Python, Deep Learning, Transformers, Multimodal Sensor Fusion, Human Activity Recognition, Time-Series Classification, Computer Vision, Transfer Learning, Cross-Validation, Feature Engineering, NumPy, pandas, Matplotlib, Edge AI, Jupyter]
+minorTags: [HKUST MINSys Lab, Research, Kaggle, CUHK-X, IMU, "3D Skeleton", Thermal Imaging, Infrared, Depth Video, MobileNetV3, R3D-18, Frozen Backbones, Auxiliary Loss, Late Fusion, Ensembling, Label Smoothing, AdamW, Cosine Annealing, Apple MPS, Subject-Grouped Splits, Data Leakage, Ablation Studies, Model Recovery]
 order: 0
 lastUpdated: 2026-11-18
 previews:

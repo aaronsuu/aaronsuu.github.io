@@ -2,8 +2,8 @@
 title: Wi-Fi Transmitter & Receiver
 description: From-scratch Python implementation of a Wi-Fi physical layer receiver — de-interleaving, soft-decision Viterbi decoding over a rate-1/2 trellis, OFDM demodulation via FFT, and matched-filter packet detection that stays reliable down to negative SNR.
 coverHtml: /projects/wifi/cover.html
-keywords: [Python, NumPy, DSP, OFDM, Wi-Fi, Signal Processing, Viterbi, AWGN]
-minorTags: ["EE 419", "Computer Networking", "802.11", FFT, QAM, Trellis, Viterbi, Convolutional Coding, Packet Detection, Modulation, Demodulation, IFFT, Preamble Detection, SNR]
+keywords: [Python, NumPy, DSP, OFDM, Wi-Fi, Signal Processing, Viterbi, AWGN, Matplotlib]
+minorTags: [EE 419, Computer Networking, "802.11", FFT, QAM, Trellis, Viterbi, Convolutional Coding, Packet Detection, Modulation, Demodulation, IFFT, Preamble Detection, SNR]
 order: 0
 lastUpdated: 2026-05-27
 previews:

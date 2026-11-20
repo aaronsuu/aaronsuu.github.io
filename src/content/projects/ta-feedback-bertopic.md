@@ -2,8 +2,8 @@
 title: BERTopic with Framework-Seeded Topics
 description: "Embedding-based topic modeling of 1,630 student responses about TA support with BERTopic (MiniLM sentence embeddings, UMAP, HDBSCAN, c-TF-IDF), then seeded with Chickering & Gamson's Seven Principles so the topics map onto an established teaching framework."
 coverHtml: /projects/ta-feedback-bertopic/cover.html
-keywords: [Python, BERTopic, Sentence Transformers, HDBSCAN, UMAP, Topic Modeling, NLP, Plotly]
-minorTags: ["EE 400", "Natural Language Processing", "all-MiniLM-L6-v2", "Embeddings", "c-TF-IDF", "Seeded Topic Modeling", "Guided Topic Modeling", "Intertopic Distance Map", "Hierarchical Clustering", "Outlier Analysis", "Chickering & Gamson", "Community of Inquiry", "Hugging Face"]
+keywords: [Python, BERTopic, Sentence Transformers, HDBSCAN, UMAP, Topic Modeling, NLP, Plotly, pandas, scikit-learn]
+minorTags: [EE 400, Natural Language Processing, all-MiniLM-L6-v2, Embeddings, c-TF-IDF, Seeded Topic Modeling, Guided Topic Modeling, Intertopic Distance Map, Hierarchical Clustering, Outlier Analysis, "Chickering & Gamson", Community of Inquiry, Hugging Face]
 order: 6
 lastUpdated: 2026-11-09
 previews:

@@ -2,8 +2,8 @@
 title: Mental-Health Text Cleaning & Visualization
 description: "A human-in-the-loop cleaning and preprocessing pipeline for 2,231 machine-translated reflections tagged anxiety, depression, stress, or normal. It covers encoding repair, de-identification with spaCy NER, a protected clinical vocabulary, and per-theme word clouds tested on human readers."
 coverHtml: /projects/mental-health-text-cleaning/cover.html
-keywords: [Python, NLP, spaCy, NLTK, pandas, Data Cleaning, Text Preprocessing, Word Clouds]
-minorTags: ["EE 400", "Natural Language Processing", "ftfy", "LanguageTool", "Named Entity Recognition", "De-identification", "Lemmatization", "Stopwords", "POS Filtering", "Contractions", "Mojibake", "Human-in-the-Loop", "Matplotlib"]
+keywords: [Python, NLP, spaCy, NLTK, pandas, Data Cleaning, Text Preprocessing, Word Clouds, Matplotlib]
+minorTags: [EE 400, Natural Language Processing, ftfy, LanguageTool, Named Entity Recognition, De-identification, Lemmatization, Stopwords, POS Filtering, Contractions, Mojibake, Human-in-the-Loop]
 order: 8
 lastUpdated: 2026-11-09
 previews:

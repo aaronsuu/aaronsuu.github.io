@@ -2,8 +2,8 @@
 title: "HusKey Manager: Breaking & Hardening a Password Manager"
 description: "Attacked and hardened a PHP/MySQL password manager running in Docker. I exploited SQL injection, cookie forgery, IDOR, path traversal, XSS and a file-upload reverse shell, fixed each at its root cause, and proved every fix with 27 pytest + Selenium tests that re-run the attacks against the live stack."
 coverHtml: /projects/huskey/cover.html
-keywords: [PHP, MySQL, SQL, Python, pytest, Selenium, Docker, Nginx, Web Security, OWASP Top 10, Penetration Testing, Secure Coding, Access Control, Metasploit, OWASP ZAP]
-minorTags: ["INFO 310", "UW iSchool", Cybersecurity, "SQL Injection", XSS, IDOR, "Path Traversal", "File Upload", "Reverse Shell", "Brute Force", bcrypt, "Session Management", "Prepared Statements", RBAC, CWE, "CIA Triad", Monolog, Loggly, "Chrome DevTools", "Regression Testing"]
+keywords: [PHP, MySQL, Python, pytest, Selenium, Docker, Nginx, Web Security, OWASP Top 10, Penetration Testing, Secure Coding, Access Control]
+minorTags: [INFO 310, UW iSchool, Cybersecurity, SQL Injection, XSS, IDOR, Path Traversal, File Upload, Reverse Shell, Brute Force, bcrypt, Session Management, Prepared Statements, RBAC, CWE, CIA Triad, Monolog, Loggly, Chrome DevTools, Regression Testing, SQL, Metasploit, OWASP ZAP]
 order: 3
 lastUpdated: 2026-11-18
 previews:
