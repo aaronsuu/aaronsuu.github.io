@@ -4,7 +4,7 @@ description: Autonomous line-following robot built around custom KiCAD PCBs with
 coverHtml: /projects/line-car/cover.html
 images: [/images/line-car.jpeg]
 keywords: [KiCAD, PCB Design, PID Control, Embedded, Hardware, Photodetectors, Microcontroller, Autonomous]
-minorTags: [Schematic Capture, Soldering, Sensor Fusion, Closed-Loop, Analog, C, Robotics, Prototyping, Op-Amp, EE 271]
+minorTags: ["Fusion 360", LTspice, Schematic Capture, Soldering, Sensor Fusion, Closed-Loop, Analog, C, Robotics, Prototyping, Op-Amp, EE 271]
 order: 4
 lastUpdated: 2026-05-27
 ---
@@ -17,4 +17,4 @@ That position reading feeds into a PID controller running on the microcontroller
 
 The PCBs were designed in KiCAD, including schematic capture, component placement, and trace routing. After fabrication the boards were hand-soldered and tested before being integrated into the chassis.
 
-**Stack:** KiCAD, custom PCBs, infrared photodetector array, op-amps, microcontroller (C++), PID control
+**Stack:** KiCAD, LTspice, Autodesk Fusion 360, custom PCBs, infrared photodetector array, op-amps, microcontroller (C++), PID control

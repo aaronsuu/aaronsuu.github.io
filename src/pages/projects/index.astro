@@ -4,13 +4,60 @@ import ProjectCard from '../../components/ProjectCard.astro';
 import { getRankedProjects } from '../../lib/projects';
 
 const projects = await getRankedProjects();
+
+// Technologies that have a logo, in tie-break order. The 5 used by the most projects are shown;
+// the rest sit behind "More". Counts use the same match rule as the search box.
+const TECH = [
+  { name: 'Python', q: 'python', logo: 'python.svg' },
+  { name: 'pandas', q: 'pandas', logo: 'pandas.svg' },
+  { name: 'scikit-learn', q: 'scikit-learn', logo: 'scikitlearn.svg' },
+  { name: 'spaCy', q: 'spacy', logo: 'spacy.svg' },
+  { name: 'NumPy', q: 'numpy', logo: 'numpy.svg' },
+  { name: 'Plotly', q: 'plotly', logo: 'plotly.svg' },
+  { name: 'Fusion 360', q: 'fusion 360', logo: 'fusion.svg' },
+  { name: 'KiCad', q: 'kicad', logo: 'kicad.svg' },
+  { name: 'LTspice', q: 'ltspice', logo: 'ltspice.svg' },
+  { name: 'Docker', q: 'docker', logo: 'docker.svg' },
+  { name: 'MySQL', q: 'mysql', logo: 'mysql.svg' },
+  { name: 'PyTorch', q: 'pytorch', logo: 'pytorch.png' },
+  { name: 'tidyverse', q: 'tidyverse', logo: 'tidyverse.png' },
+];
+const matches = (t: { q: string }) => projects.filter((p) => {
+  const kws = [...p.data.keywords, ...(p.data.minorTags ?? [])].map((k) => k.toLowerCase());
+  return p.data.title.toLowerCase().includes(t.q) || p.data.description.toLowerCase().includes(t.q) || kws.some((k) => k.includes(t.q));
+}).length;
+const counted = TECH.map((t, i) => ({ ...t, count: matches(t), i })).filter((t) => t.count > 0);
+const ranked = [...counted].sort((a, b) => b.count - a.count || a.i - b.i);
+const top = ranked.slice(0, 5);
+const more = ranked.slice(5);
 ---
 
 <BaseLayout title="Projects — Aaron Su">
   <section class="proj-h mx">
     <h1>All <em>Projects</em></h1>
-    <p>Everything I've worked on. Use the search bar to filter by keyword or technology.</p>
+    <p>Everything I've worked on. Click a technology below, or use the search bar, to filter.</p>
   </section>
+  <div class="fbar" id="fbar">
+    <div class="fbar-in mx">
+      <span class="flabel">Filter</span>
+      {top.map((t) => (
+        <button type="button" class="fchip" data-q={t.q} aria-pressed="false">
+          <span class="fl"><img src={`/projects/logos/${t.logo}`} alt="" /></span>{t.name}<span class="fc">{t.count}</span>
+        </button>
+      ))}
+      {more.length > 0 && <button type="button" class="fchip fmore" id="fmore" aria-expanded="false">More ▾</button>}
+      <button type="button" class="fchip fclear" id="fclear" hidden>Clear ✕</button>
+    </div>
+    {more.length > 0 && (
+      <div class="fbar-in fbar-more mx" id="fmorerow" hidden>
+        {more.map((t) => (
+          <button type="button" class="fchip" data-q={t.q} aria-pressed="false">
+            <span class="fl"><img src={`/projects/logos/${t.logo}`} alt="" /></span>{t.name}<span class="fc">{t.count}</span>
+          </button>
+        ))}
+      </div>
+    )}
+  </div>
   <section class="gal mx">
     <div class="gg" id="gg">
       {projects.map((p, i) => <ProjectCard project={p} index={i} />)}
@@ -32,6 +79,10 @@ const projects = await getRankedProjects();
     var srch = document.getElementById('srch');
     var cards = Array.prototype.slice.call(document.querySelectorAll('.card'));
     if (!si) return;
+    var chips = Array.prototype.slice.call(document.querySelectorAll('.fchip[data-q]'));
+    var fclear = document.getElementById('fclear');
+    var fmore = document.getElementById('fmore');
+    var fmorerow = document.getElementById('fmorerow');
 
     function apply(q) {
       q = (q || '').toLowerCase().trim();
@@ -51,6 +102,12 @@ const projects = await getRankedProjects();
       emp.classList.toggle('vis', shown === 0);
       if (rc) rc.textContent = q ? shown + ' result' + (shown !== 1 ? 's' : '') : '';
       if (sx) sx.classList.toggle('vis', si.value.length > 0);
+      chips.forEach(function (ch) {
+        var on = !!q && ch.getAttribute('data-q') === q;
+        ch.classList.toggle('on', on);
+        ch.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      if (fclear) fclear.hidden = !q;
     }
 
     var initial = '';
@@ -63,6 +120,20 @@ const projects = await getRankedProjects();
     si.addEventListener('input', function () { apply(si.value); });
     if (sx) sx.addEventListener('click', function () { si.value = ''; apply(''); si.focus(); });
     if (srch) srch.addEventListener('submit', function (e) { e.preventDefault(); apply(si.value); si.blur(); });
+    chips.forEach(function (ch) {
+      ch.addEventListener('click', function () {
+        var q = ch.getAttribute('data-q');
+        si.value = si.value.toLowerCase().trim() === q ? '' : q;
+        apply(si.value);
+      });
+    });
+    if (fclear) fclear.addEventListener('click', function () { si.value = ''; apply(''); });
+    if (fmore) fmore.addEventListener('click', function () {
+      var open = fmorerow.hidden;
+      fmorerow.hidden = !open;
+      fmore.setAttribute('aria-expanded', open ? 'true' : 'false');
+      fmore.textContent = open ? 'Less ▴' : 'More ▾';
+    });
     apply(si.value);
   })();
 </script>
