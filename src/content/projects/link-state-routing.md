@@ -17,7 +17,7 @@ Each node runs `content_server.py` with a config file that lists its UUID, name,
 
 Picture 30 people spread across a building, each with a radio. Nobody knows the full layout. Each person only knows who is standing right next to them and how far those neighbors are. Three rules let them figure out the shortest path from anyone to anyone else.
 
-First, every half-second each person broadcasts a short "I am still here" message to their direct neighbors. If a neighbor goes quiet for too long (ten times the heartbeat interval), they are considered offline and removed from the list. When a node is shut down with the `kill` command, it goes silent on purpose rather than sending a goodbye. Neighbors have to notice the missing heartbeats on their own, just like a real server that loses power with no warning.
+First, every half-second each person broadcasts a short "I am still here" message to their direct neighbors. If a neighbor goes quiet for too long (ten times the heartbeat interval, so 5 seconds), they are considered offline and removed from the list. When a node is shut down with the `kill` command, it goes silent on purpose rather than sending a goodbye. Neighbors have to notice the missing heartbeats on their own, just like a real server that loses power with no warning.
 
 Second, each node regularly sends a link-state advertisement listing its direct neighbors and the cost to reach each one. Every node that receives this message forwards a copy to its own neighbors, so the information spreads through the whole network. Each advertisement carries a sequence number. If a node has already seen a higher number from the same source, it drops the duplicate. This stops old information from looping forever.
 

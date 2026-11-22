@@ -121,6 +121,11 @@ a:hover { opacity: 0.8; }
 .cl { display: inline-flex; align-items: center; gap: 7px; font-size: 0.85rem; color: var(--text-muted); transition: color var(--tr); }
 .cl:hover { color: var(--orange); opacity: 1; }
 .rbtn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 20px; background: var(--orange); color: #1a1815; border: none; border-radius: 50px; font-family: var(--fb); font-size: 0.82rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: background var(--tr), transform var(--tr); }
+.cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.gbtn { display: inline-flex; align-items: center; padding: 9px 20px; border: 1px solid var(--border); border-radius: 50px; font-size: 0.82rem; font-weight: 600; color: var(--text); text-decoration: none; transition: border-color var(--tr), color var(--tr); }
+.gbtn:hover { border-color: var(--orange); color: var(--orange); opacity: 1; }
+.ti-list { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.ti-list li::marker { color: var(--orange); }
 .rbtn:hover { background: var(--orange-dim); transform: translateY(-1px); opacity: 1; }
 
 /* ═══════ BIO ═══════ */
@@ -316,7 +321,8 @@ a.tg:hover { opacity: 1; background: var(--bg-surface); border-color: var(--oran
   .hero { flex-direction: column-reverse; padding: 48px 20px 40px; gap: 36px; text-align: center; }
   .photo { width: 180px; height: 180px; }
   .hero-txt .tag { margin: 0 auto; }
-  .contacts { justify-content: center; }
+  .contacts, .cta-row { justify-content: center; }
+  .ti-list { text-align: left; }
   .status { margin: 20px auto 0; }
   .bio { padding: 48px 20px 56px; }
   .bio-grid { grid-template-columns: 1fr; gap: 24px; }
